@@ -22,6 +22,8 @@ void Estados()
         Serial.println("[t]: servo motor automatico");
         Serial.println("[g]: gera populacao inicial");
         Serial.println("[p]: imprime populacao inicial");
+        Serial.println("[c]: crossover dummy");
+        Serial.println("[x]: liga todos os debugs");
         Serial.println("[bxxxx]: busca regras compativeis e calcula Bid");
       }
       //Poe Servo motor no estado manual
@@ -74,6 +76,12 @@ void Estados()
         casaltemp[1] = random(Pop.QuantidadeIndividuos);
         Crossover(casaltemp);
       }
+      //liga os debugs
+      if(byte_recebido == 'x')
+      {
+        DebugAG = 1;
+        DebugSC = 1;
+      }
     break;
 
     case ESTADO_SERVO_MANUAL:
@@ -117,25 +125,37 @@ void Estados()
       }
       if(PosGeneBusca >= ANTECEDENTE)
       {
-        Serial.print("Regras encontradas: ");
+        if(DebugAG==1) { Serial.print("Regras encontradas: "); }
         Leilao.QuantidadeParticipantes = BuscaRegras(MensagemAmbiente);
-        Serial.print(Leilao.QuantidadeParticipantes,DEC);
-        Serial.print(" (");
+        if(DebugAG==1)
+        {
+          Serial.print(Leilao.QuantidadeParticipantes,DEC);
+          Serial.print(" (");
+        }
         for(i=0;i<Leilao.QuantidadeParticipantes;i++)
         {
-          Serial.print(Leilao.RegrasAplicaveis[i],DEC);
-          Serial.print(":");
+          if(DebugAG==1)
+          {
+            Serial.print(Leilao.RegrasAplicaveis[i],DEC);
+            Serial.print(":");
+          }
           Leilao.Bidt[i] = CalculaBidt(Leilao.RegrasAplicaveis[i]);
           //Serial.print(Leilao.Bidt[i],DEC);
           //Serial.print(";");
           Leilao.eBidt[i] = CalculaeBidt(Leilao.Bidt[i]);
-          Serial.print(Leilao.eBidt[i],DEC);
-          if(i!=Leilao.QuantidadeParticipantes-1) { Serial.print(" "); }
+          if(DebugAG==1) 
+          {
+            Serial.print(Leilao.eBidt[i],DEC);
+            if(i!=Leilao.QuantidadeParticipantes-1) { Serial.print(" "); }
+          }
         }
-        Serial.println(")");
+        if(DebugAG==1) { Serial.println(")"); }
         Leilao.Vencedor = Leilao.RegrasAplicaveis[BuscaVencedor(Leilao.QuantidadeParticipantes)];
-        Serial.print("Vencedor: ");
-        Serial.println(Leilao.Vencedor,DEC);
+        if(DebugAG==1) 
+        {
+          Serial.print("Vencedor: ");
+          Serial.println(Leilao.Vencedor,DEC);
+        }
         //Aplica a regra vencedora nos servo-motores e mede a recompensa (salva em Leilao.Recompensa)
         AplicaRegra(Leilao.Vencedor);
         //cobra as taxas de cada elemento da populacao

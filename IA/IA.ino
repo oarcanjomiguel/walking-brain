@@ -36,7 +36,7 @@
 #define ESTADO_CONFIG 3
 #define ESTADO_BUSCA_REGRA 4
 
-///////////////////////////////////////////////////////IA///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////SISTEMA CLASSIFICADOR///////////////////////////////////////////////////////
 #define POPULACAO_MAX 100
 #define POPULACAO_DEFAULT 20
 #define ANTECEDENTE 4
@@ -71,7 +71,7 @@ unsigned long decSegSinal = 0;      //variavel para guardar o tempo do sinal
 int segundo = 0;                    //tempo do segundos do relogio
 int minuto = 0;                     //tempo do minuto do relogio
 
-// SERVO
+///////////////////////////////////////////////////////servo///////////////////////////////////////////////////////
 int pos = 0;  //posicao do servo de 0 a 180
 unsigned char Estado_Servo;
 unsigned int  decSegServo = 0;
@@ -84,18 +84,18 @@ Servo Servo2;
 Servo Servo3;
 Servo Servo4;
 
-// SENSOR
+///////////////////////////////////////////////////////sensor///////////////////////////////////////////////////////
 long Historico[TAMANHO_BUFFER];
 unsigned char PosHistorico;
 float media;
 unsigned int decSegSensor=0;
 unsigned int pDecSegSensor = DECSEG_SENSOR;
 
-// MAQUINA DE ESTADOS
+////////////////////////////////////////////////Maquina de estados//////////////////////////////////////////////////
 unsigned char Estado;
 unsigned char PosGeneBusca;
 
-// SISTEMA CLASSIFICADOR
+//////////////////////////////////////////////SISTEMA CLASSIFICADOR/////////////////////////////////////////////////
 struct Populacao
 {
   //quantidade de individuos a serem gerados e evoluidos por geracao
@@ -120,11 +120,13 @@ struct LeilaoGenetico
   float         Recompensa;
 };
 unsigned char MensagemAmbiente[ANTECEDENTE];
+unsigned char DebugSC = 0;
 //static const float SigmaBid = 0.1;
 static const float SigmaBid = 0.2;
-float Taxa_v = 1 - pow(0.5,1/ITERACOES_MEIA_VIDA); //taxa de meia vida a ser cobrada a cada iteracao
+float Taxa_v = 1 - pow(0.5,1.0/ITERACOES_MEIA_VIDA); //taxa de meia vida a ser cobrada a cada iteracao
 
-//ALGORITMO GENETICO
+
+////////////////////////////////////////////////ALGORITMO GENETICO//////////////////////////////////////////////////
 unsigned char individuos_crossover[2][ANTECEDENTE+CONSEQUENTE];
 unsigned char DebugAG = 0;
 

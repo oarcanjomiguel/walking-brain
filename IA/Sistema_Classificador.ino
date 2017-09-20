@@ -222,12 +222,12 @@ void CobraTaxas(void)
   //cobra a taxa de vida de todo mundo
   for(i=0;i<Pop.QuantidadeIndividuos;i++)
   {
-    Pop.St[i] = (1 - Taxa_v) * Pop.St[i];
+    Pop.St[i] = (1.0 - Taxa_v) * Pop.St[i];
   }
   //cobra bid do vencedor, taxa de participacao dos selecionados e aplica recompensa
   for(i=0;i<Leilao.QuantidadeParticipantes;i++)
   {
-    taxa_participacao = BID_TAX * Leilao.Bidt[i];
+    taxa_participacao = BID_TAX * 1.0 * Leilao.Bidt[i];
     //se for o vencedor do leilao, aplica bidt e recompensa
     if(Leilao.RegrasAplicaveis[i] == Leilao.Vencedor)
     {
@@ -236,27 +236,29 @@ void CobraTaxas(void)
     }
     else
     {
-      rt = 0;
-      bidt = 0;
+      rt = 0.0;
+      bidt = 0.0;
     }
     
-    Pop.St[Leilao.RegrasAplicaveis[i]] = (1 - Taxa_v) * Pop.St[Leilao.RegrasAplicaveis[i]] + rt - bidt - taxa_participacao;
-    //Pop.St[Leilao.RegrasAplicaveis[i]] = Pop.St[Leilao.RegrasAplicaveis[i]] + rt - bidt - taxa_participacao;
-    /*
+    //Pop.St[Leilao.RegrasAplicaveis[i]] = (1.0 - Taxa_v) * Pop.St[Leilao.RegrasAplicaveis[i]] + rt - bidt - taxa_participacao;
+    Pop.St[Leilao.RegrasAplicaveis[i]] = Pop.St[Leilao.RegrasAplicaveis[i]] + rt - bidt - taxa_participacao;
+    
     //Debug serial do calculo da nova St
-    Serial.print("Taxa de vida: ");
-    Serial.println(Taxa_v,DEC);
-    Serial.print("Regra: ");
-    Serial.println(Leilao.RegrasAplicaveis[i],DEC);
-    Serial.print("Energia: ");
-    Serial.println(Pop.St[Leilao.RegrasAplicaveis[i]],DEC);
-    Serial.print("Recompensa:");
-    Serial.println(rt,DEC);
-    Serial.print("Bid: ");
-    Serial.println(bidt,DEC);
-    Serial.print("Taxa de Participacao: ");
-    Serial.println(taxa_participacao,DEC);
-    */
+    if(DebugSC == 1)
+    {
+      Serial.print("Taxa de vida: ");
+      Serial.println(Taxa_v,DEC);
+      Serial.print("Regra: ");
+      Serial.println(Leilao.RegrasAplicaveis[i],DEC);
+      Serial.print("Energia: ");
+      Serial.println(Pop.St[Leilao.RegrasAplicaveis[i]],DEC);
+      Serial.print("Recompensa:");
+      Serial.println(rt,DEC);
+      Serial.print("Bid: ");
+      Serial.println(bidt,DEC);
+      Serial.print("Taxa de Participacao: ");
+      Serial.println(taxa_participacao,DEC);
+    }
   }
   
 }

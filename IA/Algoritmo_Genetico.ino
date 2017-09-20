@@ -72,3 +72,7 @@ void Crossover(unsigned char ind[2])
   }
 }
 
+void Mutacao(void)
+{
+  
+}
