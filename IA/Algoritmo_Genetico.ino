@@ -82,5 +82,11 @@ void Crossover(unsigned char ind[2])
  */
 void Mutacao(float taxa)
 {
+  unsigned int quantidade_genes_mutados;
+  unsigned int i;
+
+  quantidade_genes_mutados = taxa * ( Pop.QuantidadeIndividuos * (ANTECEDENTE + CONSEQUENTE) );
+  Serial.print(quantidade_genes_mutados,DEC);
+
   
 }

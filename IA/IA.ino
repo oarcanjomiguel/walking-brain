@@ -1,8 +1,11 @@
 /* PROJETO DE Robo quadrupede que anda sozinho
  * IA: Sistemas classificador
+ * 
+ * 
  */
 
 #include <Servo.h>
+#include <math.h>
 /* /////////////////////////////////////////////////////////////////////////////////
  * ////////////////////////    DEFINICOES    ///////////////////////////////////////
  * /////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +38,9 @@
 #define ESTADO_SERVO_AUTOMATICO 2
 #define ESTADO_CONFIG 3
 #define ESTADO_BUSCA_REGRA 4
+#define ESTADO_MENU_SERVO 5
+#define ESTADO_MENU_IA 6
+#define ESTADO_MENU_DEBUG 7
 
 ///////////////////////////////////////////////////////SISTEMA CLASSIFICADOR///////////////////////////////////////////////////////
 #define POPULACAO_MAX 100
@@ -56,6 +62,9 @@
 #define FEEDBACK_ATIVO 0
 //taxa de proporcionalidade do Bidt a ser cobrada de todos os participantes do leilao
 #define BID_TAX 0.0030
+
+///////////////////////////////////////////////////////ALGORITMO GENETICO///////////////////////////////////////////////////////
+#define TAXA_MUTACAO 0.1
 //
 
 /* /////////////////////////////////////////////////////////////////////////////////
@@ -120,15 +129,16 @@ struct LeilaoGenetico
   float         Recompensa;
 };
 unsigned char MensagemAmbiente[ANTECEDENTE];
-unsigned char DebugSC = 0;
 //static const float SigmaBid = 0.1;
 static const float SigmaBid = 0.2;
 float Taxa_v = 1 - pow(0.5,1.0/ITERACOES_MEIA_VIDA); //taxa de meia vida a ser cobrada a cada iteracao
 
-
 ////////////////////////////////////////////////ALGORITMO GENETICO//////////////////////////////////////////////////
 unsigned char individuos_crossover[2][ANTECEDENTE+CONSEQUENTE];
+
+////////////////////////////////////////////////      DEBUGS      //////////////////////////////////////////////////
 unsigned char DebugAG = 0;
+unsigned char DebugSC = 0;
 
 struct Populacao Pop;
 struct LeilaoGenetico Leilao;

@@ -15,25 +15,74 @@ void Estados()
   {
     case ESTADO_MENU:
     //imprime menu na serial
+      switch(byte_recebido)
+      {
+        case 'm':
+          Serial.println("[s]: menu servo-motor");
+          Serial.println("[d]: imprimir distancia");
+          Serial.println("[i]: menu IA");
+          Serial.println("[x]: menu debug");
+        break;
+
+        case 's':
+          Estado = ESTADO_MENU_SERVO;
+          Serial.println("[m]: liga/desliga modo manual");
+          Serial.println("[a]: liga/desliga modo automatico");
+          Serial.println("[z]: retorna ao menu principal");
+        break;
+
+        case 'd':
+          for (i=0;i<TAMANHO_BUFFER;i++)
+          {
+            Serial.print(Historico[i]);
+            Serial.print(" ");
+          }
+          Serial.println(" ");
+        break;
+
+        case 'i':
+          Estado = ESTADO_MENU_IA;
+          Serial.println("[g]: gera populacao inicial");
+          Serial.println("[p]: imprime populacao");
+          Serial.println("[bxxxx]: busca regras compativeis e calcula Bid");
+          Serial.println("[c]: crossover dummy");
+          Serial.println("[m]: mutacao dummy");
+          Serial.println("[z]: retorna ao menu principal");
+        break;
+
+        case 'x':
+          Estado = ESTADO_MENU_DEBUG;
+          Serial.println("[a]: liga/desliga debug do AG");
+          Serial.println("[s]: liga/desliga debug do Sistema Classificador");
+          Serial.println("[z]: retorna ao menu principal");
+        break;
+      }
+      /*
       if (byte_recebido == 'm')
       {
-        Serial.println("[s]: ligar/desligar o servo-motor");
+        Serial.println("[s]: menu servo-motor");
         Serial.println("[d]: imprimir distancia");
-        Serial.println("[t]: servo motor automatico");
-        Serial.println("[g]: gera populacao inicial");
-        Serial.println("[p]: imprime populacao inicial");
-        Serial.println("[c]: crossover dummy");
-        Serial.println("[x]: liga todos os debugs");
-        Serial.println("[bxxxx]: busca regras compativeis e calcula Bid");
+        //Serial.println("[t]: servo motor automatico");
+        Serial.println("[i]: menu IA");
+        //Serial.println("[p]: imprime populacao inicial");
+        //Serial.println("[c]: crossover dummy");
+        //Serial.println("[u]: mutacao dummy");
+        Serial.println("[x]: menu debug");
+        //Serial.println("[x]: liga todos os debugs");
+        //Serial.println("[bxxxx]: busca regras compativeis e calcula Bid");
       }
+      */
+      /*
       //Poe Servo motor no estado manual
       if(byte_recebido == 's')
       {
-        Estado = ESTADO_SERVO_MANUAL;
+        //Estado = ESTADO_SERVO_MANUAL;
         Estado_Servo = 1;
         decSegServo = 0; //iniciou atividade do Servo
         Serial.println("Servo ligado manual");
       }
+      */
+      /*
       //Poe o servo em modo automatico
       if(byte_recebido == 't')
       {
@@ -42,6 +91,8 @@ void Estados()
         decSegServo = 0; //iniciou atividade do Servo
         Serial.println("Servo ligado automatico");
       }
+      */
+      /*
       //imprime buffer de distancias lidas
       if(byte_recebido == 'd')
       {
@@ -52,22 +103,30 @@ void Estados()
         }
         Serial.println(" ");
       }
+      */
+      /*
       //inicializa populacao de classificadores
       if(byte_recebido == 'g')
       {
         InicializaPopulacao(Pop.QuantidadeIndividuos);
         Serial.println("Populacao Inicializada com sucesso!");
       }
+      */
+      /*
       //imprime populacao de classificadores
       if(byte_recebido == 'p')
       {
         ImprimePopulacao(Pop.QuantidadeIndividuos);
       }
+      */
+      /*
       if(byte_recebido == 'b')
       {
         Estado = ESTADO_BUSCA_REGRA;
         PosGeneBusca = 0;
       }
+      */
+      /*
       //faz crossover dummy para teste
       if(byte_recebido == 'c')
       {
@@ -76,14 +135,40 @@ void Estados()
         casaltemp[1] = random(Pop.QuantidadeIndividuos);
         Crossover(casaltemp);
       }
+      */
+      /*
       //liga os debugs
       if(byte_recebido == 'x')
       {
         DebugAG = 1;
         DebugSC = 1;
       }
+      */
     break;
+    
+    case ESTADO_MENU_SERVO:
+       switch(byte_recebido)
+       {
+        case 'm':
+          Estado_Servo = 1;
+          decSegServo = 0; //iniciou atividade do Servo
+          Serial.println("Servo ligado manual");
+        break;
 
+        case 'a':
+          Estado = ESTADO_SERVO_AUTOMATICO;
+          Estado_Servo = 2;
+          decSegServo = 0; //iniciou atividade do Servo
+          Serial.println("Servo ligado automatico");
+        break;
+
+        case 'z':
+          Serial.println("Menu principal");
+          Estado = ESTADO_MENU;
+        break;
+       }
+    break;
+    /*
     case ESTADO_SERVO_MANUAL:
       if(byte_recebido == 's')
       {
@@ -92,7 +177,7 @@ void Estados()
         Serial.println("Servo desligado");
       }
     break;
-
+    */
     case ESTADO_SERVO_AUTOMATICO:
       if(byte_recebido == 't')
       {
@@ -107,7 +192,85 @@ void Estados()
         Serial.println(pDecSegServo, DEC);
       }
     break;
+    
+    case ESTADO_MENU_IA:
+      switch(byte_recebido)
+      {
+        case 'g':
+          InicializaPopulacao(Pop.QuantidadeIndividuos);
+          Serial.println("Populacao Inicializada com sucesso!");
+        break;
 
+        case 'p':
+          ImprimePopulacao(Pop.QuantidadeIndividuos);
+        break;
+
+        case 'b':
+          Estado = ESTADO_BUSCA_REGRA;
+          PosGeneBusca = 0;
+        break;
+
+        case 'c':
+          unsigned char casaltemp[2];
+          casaltemp[0] = random(Pop.QuantidadeIndividuos);
+          casaltemp[1] = random(Pop.QuantidadeIndividuos);
+          Crossover(casaltemp);
+        break;
+
+        case 'm':
+          Mutacao(TAXA_MUTACAO);
+        break;
+
+        case 'z':
+          Serial.println("Menu principal");
+          Estado = ESTADO_MENU;
+        break;
+      }
+    break;
+
+    case ESTADO_MENU_DEBUG:
+    /*
+     *Serial.println("[a]: liga/desliga debug do AG");
+      Serial.println("[s]: liga/desliga debug do Sistema Classificador");
+      Serial.println("[z]: retorna ao menu principal");
+     */
+      switch(byte_recebido)
+      {
+        //liga/desliga debug do AG
+        case 'a':
+          if(DebugAG == 0)
+          {
+            Serial.println("Debug do Algoritmo Genetico ligado");
+            DebugAG = 1;
+          }
+          else
+          {
+            Serial.println("Debug do Algoritmo Genetico desligado");
+            DebugAG = 0;
+          }
+        break;
+        
+        //liga/desliga debug do Sistema Classificador
+        case 's':
+          if(DebugSC == 0)
+          {
+            DebugSC = 1;
+            Serial.println("Debug do sistema Classificado ligado");
+          }
+          else
+          {
+            DebugSC = 0;
+            Serial.println("Debug do Sistema Classificador desligado");
+          }
+        break;
+
+        case 'z':
+          Serial.println("Menu principal");
+          Estado = ESTADO_MENU;
+        break;
+      }
+    break;
+    
     case ESTADO_CONFIG:
 
     break;
