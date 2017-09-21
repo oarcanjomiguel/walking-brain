@@ -72,7 +72,15 @@ void Crossover(unsigned char ind[2])
   }
 }
 
-void Mutacao(void)
+/*
+ * Funcao:  void Mutacao(float taxa)
+ * In:      float taxa: taxa de mutacao (quantidade de elementos do vetor Pop que serao mutados)
+ * Out:     void
+ * Desc.:   Seleciona aleatoriamente uma quantidade de genes igual a taxa*Pop.QuantidadeIndividuos*(ANTECEDENTE+CONSEQUENTE)
+ *          para ser mutado. Observa que se o gene esta no antecedente tem 2 opcoes de mutacao, caso esteja
+ *          depois do antecedente do individuo, tem somente uma opcao de mutacao
+ */
+void Mutacao(float taxa)
 {
   
 }

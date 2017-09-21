@@ -181,7 +181,7 @@ void Estados()
       }
       if(byte_recebido == '2')
       {
-        pos = 135;
+        pos = 115;
       }
     break;
   }
