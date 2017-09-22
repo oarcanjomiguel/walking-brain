@@ -10,11 +10,11 @@
     if (Estado_Servo == 1)
     {
       //soh escreve no registrador do servo se o valor for diferente; 
-      if(meuservo.read() != pos)
-      {
-        meuservo.write(pos);
-        //Serial.println(meuservo.read()); //debug serial
-      }
+      if(Servo1.read() != pos) Servo1.write(pos);
+      if(Servo2.read() != pos) Servo2.write(pos);
+      if(Servo3.read() != pos) Servo3.write(pos);
+      if(Servo4.read() != pos) Servo4.write(pos);
+      
     }
     //modo automatico do servo
     if(Estado_Servo == 2)

@@ -20,6 +20,9 @@ Serial: 9600
     - crossover
     - mutacao
 - Fazer funcoes de metricas do AG
+- Ailmentacao e ativacao de cada servo independente
+    - usar pinos de I/O para ligar cada servo de modo independente (VCC)
+    
 
 V0.1
 GERAL

@@ -86,8 +86,9 @@ unsigned char Estado_Servo;
 unsigned int  decSegServo = 0;
 unsigned char pDecSegServo = DECSEG_SERVO_WRITE; //intervalo entre escritas do servo em decimos de segundo
 const char    PosicaoServo[ANGULOS_SERVO] = {45, 135};
-Servo meuservo; //cria o objeto para controlar o servo
-                //maximo de 12 objetos
+//Servo meuservo; 
+
+//cria o objeto para controlar o servo (maximo de 12 objetos)
 Servo Servo1;
 Servo Servo2;
 Servo Servo3;
@@ -150,7 +151,7 @@ struct LeilaoGenetico Leilao;
 
 void setup_servo()
 {
-  meuservo.attach(PINO_SERVO); //Inicializa o pino 9 como pwm para o servo motor
+  //meuservo.attach(PINO_SERVO); //Inicializa o pino 9 como pwm para o servo motor
   Servo1.attach(PINO_SERVO1);
   Servo2.attach(PINO_SERVO2);
   Servo3.attach(PINO_SERVO3);
