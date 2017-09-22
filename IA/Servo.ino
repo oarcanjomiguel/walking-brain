@@ -19,13 +19,19 @@
     //modo automatico do servo
     if(Estado_Servo == 2)
     {
-      if(meuservo.read() == PosicaoServo[0])
+      if(Servo1.read() == PosicaoServo[0])
       {
-        meuservo.write(PosicaoServo[1]);
+        Servo1.write(PosicaoServo[1]);
+        Servo2.write(PosicaoServo[1]);
+        Servo3.write(PosicaoServo[1]);
+        Servo4.write(PosicaoServo[1]);
       }
       else
       {
-        meuservo.write(PosicaoServo[0]);
+        Servo1.write(PosicaoServo[0]);
+        Servo2.write(PosicaoServo[0]);
+        Servo3.write(PosicaoServo[0]);
+        Servo4.write(PosicaoServo[0]);
       }
     }
     //modo Tabela Verdade do Servo
