@@ -57,93 +57,6 @@ void Estados()
           Serial.println("[z]: retorna ao menu principal");
         break;
       }
-      /*
-      if (byte_recebido == 'm')
-      {
-        Serial.println("[s]: menu servo-motor");
-        Serial.println("[d]: imprimir distancia");
-        //Serial.println("[t]: servo motor automatico");
-        Serial.println("[i]: menu IA");
-        //Serial.println("[p]: imprime populacao inicial");
-        //Serial.println("[c]: crossover dummy");
-        //Serial.println("[u]: mutacao dummy");
-        Serial.println("[x]: menu debug");
-        //Serial.println("[x]: liga todos os debugs");
-        //Serial.println("[bxxxx]: busca regras compativeis e calcula Bid");
-      }
-      */
-      /*
-      //Poe Servo motor no estado manual
-      if(byte_recebido == 's')
-      {
-        //Estado = ESTADO_SERVO_MANUAL;
-        Estado_Servo = 1;
-        decSegServo = 0; //iniciou atividade do Servo
-        Serial.println("Servo ligado manual");
-      }
-      */
-      /*
-      //Poe o servo em modo automatico
-      if(byte_recebido == 't')
-      {
-        Estado = ESTADO_SERVO_AUTOMATICO;
-        Estado_Servo = 2;
-        decSegServo = 0; //iniciou atividade do Servo
-        Serial.println("Servo ligado automatico");
-      }
-      */
-      /*
-      //imprime buffer de distancias lidas
-      if(byte_recebido == 'd')
-      {
-        for (i=0;i<TAMANHO_BUFFER;i++)
-        {
-          Serial.print(Historico[i]);
-          Serial.print(" ");
-        }
-        Serial.println(" ");
-      }
-      */
-      /*
-      //inicializa populacao de classificadores
-      if(byte_recebido == 'g')
-      {
-        InicializaPopulacao(Pop.QuantidadeIndividuos);
-        Serial.println("Populacao Inicializada com sucesso!");
-      }
-      */
-      /*
-      //imprime populacao de classificadores
-      if(byte_recebido == 'p')
-      {
-        ImprimePopulacao(Pop.QuantidadeIndividuos);
-      }
-      */
-      /*
-      if(byte_recebido == 'b')
-      {
-        Estado = ESTADO_BUSCA_REGRA;
-        PosGeneBusca = 0;
-      }
-      */
-      /*
-      //faz crossover dummy para teste
-      if(byte_recebido == 'c')
-      {
-        unsigned char casaltemp[2];
-        casaltemp[0] = random(Pop.QuantidadeIndividuos);
-        casaltemp[1] = random(Pop.QuantidadeIndividuos);
-        Crossover(casaltemp);
-      }
-      */
-      /*
-      //liga os debugs
-      if(byte_recebido == 'x')
-      {
-        DebugAG = 1;
-        DebugSC = 1;
-      }
-      */
     break;
     
     case ESTADO_MENU_SERVO:
@@ -168,16 +81,7 @@ void Estados()
         break;
        }
     break;
-    /*
-    case ESTADO_SERVO_MANUAL:
-      if(byte_recebido == 's')
-      {
-        Estado = ESTADO_MENU;
-        Estado_Servo = 0;
-        Serial.println("Servo desligado");
-      }
-    break;
-    */
+   
     case ESTADO_SERVO_AUTOMATICO:
       if(byte_recebido == 't')
       {
@@ -229,11 +133,7 @@ void Estados()
     break;
 
     case ESTADO_MENU_DEBUG:
-    /*
-     *Serial.println("[a]: liga/desliga debug do AG");
-      Serial.println("[s]: liga/desliga debug do Sistema Classificador");
-      Serial.println("[z]: retorna ao menu principal");
-     */
+    
       switch(byte_recebido)
       {
         //liga/desliga debug do AG
@@ -336,16 +236,17 @@ void Estados()
     case 1:
       if(byte_recebido == '0')
       {
-        pos = 0;
+        pos = SERVO_ANGULO0;
       }
       if(byte_recebido == '1')
       {
-        pos = 45;
+        pos = SERVO_ANGULO1;
       }
       if(byte_recebido == '2')
       {
-        pos = 115;
+        pos = SERVO_ANGULO2;
       }
+      
     break;
   }
 }

@@ -18,9 +18,11 @@
 #define PINO_SERVO4 5
 #define DECSEG_SERVO_WRITE 3
 #define ANGULOS_SERVO 2
-//#define SERVO_ALGULO0 0
+const int SERVO_ANGULO0 = 10;
 //#define SERVO_ANGULO1 45
+const int SERVO_ANGULO1 = 45;
 //#define SERVO_ANGULO2 135
+const int SERVO_ANGULO2 = 135;
 //numero maximo de servos conectados ao hardware
 #define SERVO_MAX 4
 
@@ -65,6 +67,7 @@
 
 ///////////////////////////////////////////////////////ALGORITMO GENETICO///////////////////////////////////////////////////////
 #define TAXA_MUTACAO 0.1
+#define POPULACAO_AG_MAX 10
 //
 
 /* /////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +139,12 @@ float Taxa_v = 1 - pow(0.5,1.0/ITERACOES_MEIA_VIDA); //taxa de meia vida a ser c
 
 ////////////////////////////////////////////////ALGORITMO GENETICO//////////////////////////////////////////////////
 unsigned char individuos_crossover[2][ANTECEDENTE+CONSEQUENTE];
+struct PopulacaoAG
+{
+  //novos individuos criados a partir dos operadores geneticos
+  unsigned char QuantidadeIndividuos=0;
+  unsigned char Cromossomo[POPULACAO_AG_MAX][ANTECEDENTE+CONSEQUENTE];
+};
 
 ////////////////////////////////////////////////      DEBUGS      //////////////////////////////////////////////////
 unsigned char DebugAG = 0;
@@ -143,6 +152,7 @@ unsigned char DebugSC = 0;
 
 struct Populacao Pop;
 struct LeilaoGenetico Leilao;
+struct PopulacaoAG PopAG;
 
 /* /////////////////////////////////////////////////////////////////////////////////
  * ///////////////////////////// SETUP /////////////////////////////////////////////

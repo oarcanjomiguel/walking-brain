@@ -3,19 +3,28 @@ Serial: 9600
 
 ///////////////////////////  2DO  ///////////////////////////////////////////////////
 
+//SERIAL
 - fazer rotina de buffer serial
   - retirar a rotina de tratamento do byte_recebido da maquina de estados
+
+//CONFIG
 - Fazer modulo de savar config e parametros na EEPROM
-- Fazer menu de config de parametros com opcao de verbose debug para cada modulo 
+- Fazer menu de config de parametros com opcao de verbose debug para cada modulo
   - geracao de individuos, calculo dos lances, troca de geracoes, evolucao etc
+- Fazer numero de servo motores variavel e configuravel por parametro
+
+//SISTEMA CLASSIFICADOR
 - Funcao AplicaRegra que atualiza as posicoes dos servo-motores de acordo com a regra vencedora do leilao
   e mede a variacao da distancia para aplicar recompensa
+
+//SERVO
 - Funcao PosicionaServos:
     - atualiza a posicao do servo de acordo com a entrada (so atualiza se a posicao atual difere do comandado)
     - faz o calculo das possiveis posicoes de acordo com o numero de possibilidades do gene
     - testa se o servo esta habilitado
+
+//DEBUG
 - Fazer funcao de traducao de erro de int para string (para traduzir o retorno das funcoes)
-- Fazer numero de servo motores variavel e configuravel por parametro
 - Fazer modulo do AG
     - crossover
     - mutacao
@@ -39,4 +48,8 @@ CLASSIFICADOR
 
 AG
 - Crossover com indicacao de individuos e ponto de mutacao aleatorio
+
+Servo
+- Codigo adequado para 4 servo motores
+  - adaptado o codigo de acionamento manual e automatico dos motores
   */

@@ -7,13 +7,14 @@
   if(decSegServo > pDecSegServo)
   {
     //modo manual do servo
-    if (Estado_Servo == 1)
+    if ((Estado_Servo == 1)&&(pos >= 0)&&(pos <= 180))
     {
       //soh escreve no registrador do servo se o valor for diferente; 
-      if(Servo1.read() != pos) Servo1.write(pos);
-      if(Servo2.read() != pos) Servo2.write(pos);
-      if(Servo3.read() != pos) Servo3.write(pos);
-      if(Servo4.read() != pos) Servo4.write(pos);
+      int posrev = 180-pos;
+      if(Servo1.read() != posrev) Servo1.write(posrev);
+      //if(Servo2.read() != pos) Servo2.write(pos);
+      if(Servo3.read() != posrev) Servo3.write(posrev);
+      //if(Servo4.read() != pos) Servo4.write(pos);
       
     }
     //modo automatico do servo
