@@ -63,9 +63,18 @@ void Estados()
        switch(byte_recebido)
        {
         case 'm':
-          Estado_Servo = 1;
-          decSegServo = 0; //iniciou atividade do Servo
-          Serial.println("Servo ligado manual");
+          if(Estado_Servo != 1)
+          {
+            Estado_Servo = 1;
+            decSegServo = 0; //iniciou atividade do Servo
+            pos = SERVO_ANGULO0;
+            Serial.println("Servo ligado manual");
+          }
+          else
+          {
+            Estado_Servo = 0;
+            Serial.println("Servo desligado");
+          }
         break;
 
         case 'a':

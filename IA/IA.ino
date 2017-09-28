@@ -18,11 +18,11 @@
 #define PINO_SERVO4 5
 #define DECSEG_SERVO_WRITE 3
 #define ANGULOS_SERVO 2
-const int SERVO_ANGULO0 = 10;
+const int SERVO_ANGULO0 = 90;
 //#define SERVO_ANGULO1 45
-const int SERVO_ANGULO1 = 45;
+const int SERVO_ANGULO1 = 70;
 //#define SERVO_ANGULO2 135
-const int SERVO_ANGULO2 = 135;
+const int SERVO_ANGULO2 = 110;
 //numero maximo de servos conectados ao hardware
 #define SERVO_MAX 4
 

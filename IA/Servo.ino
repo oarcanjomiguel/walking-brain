@@ -12,9 +12,9 @@
       //soh escreve no registrador do servo se o valor for diferente; 
       int posrev = 180-pos;
       if(Servo1.read() != posrev) Servo1.write(posrev);
-      //if(Servo2.read() != pos) Servo2.write(pos);
+      if(Servo2.read() != pos) Servo2.write(pos);
       if(Servo3.read() != posrev) Servo3.write(posrev);
-      //if(Servo4.read() != pos) Servo4.write(pos);
+      if(Servo4.read() != pos) Servo4.write(pos);
       
     }
     //modo automatico do servo
