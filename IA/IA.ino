@@ -85,9 +85,11 @@ int minuto = 0;                     //tempo do minuto do relogio
 
 ///////////////////////////////////////////////////////servo///////////////////////////////////////////////////////
 int pos = 0;  //posicao do servo de 0 a 180
+unsigned char Posicao_Servos[SERVO_MAX];        //posicao de cada servo motor
+unsigned char Posicao_Servos_Antiga[SERVO_MAX]; //posicao anterior de cada servo motor pra saber se precisa atualizar
 unsigned char Estado_Servo;
 unsigned int  decSegServo = 0;
-unsigned char pDecSegServo = DECSEG_SERVO_WRITE; //intervalo entre escritas do servo em decimos de segundo
+unsigned char pDecSegServo = DECSEG_SERVO_WRITE; //intervalo entre escritas do servo em decimos de segundos
 const char    PosicaoServo[ANGULOS_SERVO] = {45, 135};
 //Servo meuservo; 
 
@@ -183,7 +185,7 @@ void setup_sensor()
 
 void setup() {
   setup_servo();
-  //setup_sensor();
+  setup_sensor();
   Serial.begin (9600);
   Estado = 0;
   Estado_Servo = 0;
@@ -202,6 +204,6 @@ void loop()
 {
   TrataTimer();
   Estados();
-  //TrataSensor();
+  TrataSensor();
   TrataServo();
 }
