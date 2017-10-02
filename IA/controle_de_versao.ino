@@ -23,6 +23,10 @@ Serial: 9600
     - faz o calculo das possiveis posicoes de acordo com o numero de possibilidades do gene
     - testa se o servo esta habilitado
 
+//SENSOR
+- Funcao que salva media da distancia quando todos os valores do buffer de distancias estao dentro de +-delta
+  de margem de erro (garantia da estabilidade das leituras)
+
 //DEBUG
 - Fazer funcao de traducao de erro de int para string (para traduzir o retorno das funcoes)
 - Fazer modulo do AG
@@ -52,4 +56,6 @@ AG
 Servo
 - Codigo adequado para 4 servo motores
   - adaptado o codigo de acionamento manual e automatico dos motores
+  - Adequado para conter variavel de posicao com 4 espacos
+  - Criada variavel de posicao de servos antiga para controlar se muda registrador ou nao
   */

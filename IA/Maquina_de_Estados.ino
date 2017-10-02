@@ -47,6 +47,7 @@ void Estados()
           Serial.println("[bxxxx]: busca regras compativeis e calcula Bid");
           Serial.println("[c]: crossover dummy");
           Serial.println("[m]: mutacao dummy");
+          Serial.println("[axx]: Aplica regra xx");
           Serial.println("[z]: retorna ao menu principal");
         break;
 
@@ -133,7 +134,12 @@ void Estados()
         case 'm':
           Mutacao(TAXA_MUTACAO);
         break;
-
+        
+        case 'a': //aplica regra
+          Estado = ESTADO_APLICA_REGRA;
+          PosGeneBusca=0;
+        break;
+        
         case 'z':
           Serial.println("Menu principal");
           Estado = ESTADO_MENU;
@@ -234,6 +240,30 @@ void Estados()
         CobraTaxas();
         Estado = ESTADO_MENU;
       }
+    break;
+
+    case ESTADO_APLICA_REGRA:
+      if((byte_recebido>='0')&&(byte_recebido<='9'))
+      {
+        if(PosGeneBusca==0)
+        {
+          RegraAplicada = (byte_recebido - 48)*10;
+          PosGeneBusca++;
+        }
+        else
+        {
+          RegraAplicada = RegraAplicada + (byte_recebido - 48);
+          if(RegraAplicada <= POPULACAO_MAX) //individuo eh valido
+          {
+            Serial.print("Regra Aplicada: ");
+            Serial.println(RegraAplicada,DEC);
+            //AplicaRegra(
+          }
+          Estado = ESTADO_MENU_IA;
+        }
+        
+      }
+      
     break;
   }
 

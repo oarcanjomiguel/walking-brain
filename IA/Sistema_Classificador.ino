@@ -172,10 +172,20 @@ float MedeRecompensa(void)
 {
   float recompensa;
 
-  if(Leilao.DistanciaInicial > Leilao.DistanciaFinal)
+  if(Leilao.DistanciaInicial > Leilao.DistanciaFinal) 
+  {
+    
+  }
   return(0.0);
 }
 
+/*
+ * Funcao:  void AplicaRegra(unsigned int ind)
+ * In:      unsigned int ind: indice no vetor Pop da regra a ser aplicada
+ * Out:     void
+ * Desc.:   Aplica as posicoes do Servo presentes de Pop[ANTECEDENTE] ate Pop[ANTECEDENTE+CONSEQUENTE-1]
+ *          
+ */
 void AplicaRegra(unsigned int ind)
 {
   unsigned int i;

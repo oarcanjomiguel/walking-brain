@@ -1,4 +1,4 @@
-  /* ////////////////////////////////////////////////////////////////////////////////
+ /*/////////////////////////////////////////////////////////////////////////////////
  * ////////////////////// SENSOR DE DISTANCA ///////////////////////////////////////
  * /////////////////////////////////////////////////////////////////////////////////
  */
@@ -54,5 +54,30 @@ void TrataSensor()
       */
     }
   }
+}
+
+/*
+ * Funcao:  long MediaSensor(void)
+ * In:      void
+ * Out:     long media das distancias do buffer
+ * Desc.:   retorna o valor da media das distancias presentes no buffer de leituras
+ *          caso essas distancias estejam a no maximo 2*DELTA_SENSOR uma da outra
+ */
+char MediaSensor(void)
+{
+  unsigned char i,j;
+  unsigned char estavel = 1;
+  for(i=0;i<TAMANHO_BUFFER;i++)
+  {
+    if(media > Historico[i])
+    {
+      if(Historico[i] + DELTA_SENSOR < media) { estavel = 0; }
+    }
+    else
+    {
+      if(media + DELTA_SENSOR < Historico[i]) {estavel = 0; }
+    }
+  }
+  return(estavel);
 }
 

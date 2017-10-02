@@ -19,21 +19,21 @@
 #define DECSEG_SERVO_WRITE 3
 #define ANGULOS_SERVO 2
 const int SERVO_ANGULO0 = 90;
-//#define SERVO_ANGULO1 45
 const int SERVO_ANGULO1 = 70;
-//#define SERVO_ANGULO2 135
 const int SERVO_ANGULO2 = 110;
 //numero maximo de servos conectados ao hardware
 #define SERVO_MAX 4
 
 ///////////////////////////////////////////////////////sensor///////////////////////////////////////////////////////
-#define trigPin 13   // pino de trigger do sensor
-#define echoPin 12   // pino de echo para calculo da distancia
-#define TAMANHO_BUFFER 10 // tamanho do buffer de historico do sensor
+#define trigPin 13            // pino de trigger do sensor
+#define echoPin 12            // pino de echo para calculo da distancia
+#define TAMANHO_BUFFER 10     // tamanho do buffer de historico do sensor
 #define MAX_DISTANCIA_CM 200
 #define MIN_DISTANCIA_CM 0
-#define DECSEG_SENSOR 1   //intervalo em decimos de segundo entre leituras do sensor
-
+#define DECSEG_SENSOR 1       // intervalo em decimos de segundo entre leituras do sensor
+#define DELTA_SENSOR 2        // margem de erro para cima e para baixo dos valores do buffer de distancias (garantia da
+                              // estabilidade do valor
+                              
 ///////////////////////////////////////////////////////Maquina de estados///////////////////////////////////////////////////////
 #define ESTADO_MENU 0
 #define ESTADO_SERVO_MANUAL 1
@@ -43,6 +43,7 @@ const int SERVO_ANGULO2 = 110;
 #define ESTADO_MENU_SERVO 5
 #define ESTADO_MENU_IA 6
 #define ESTADO_MENU_DEBUG 7
+#define ESTADO_APLICA_REGRA 8
 
 ///////////////////////////////////////////////////////SISTEMA CLASSIFICADOR///////////////////////////////////////////////////////
 #define POPULACAO_MAX 100
@@ -90,7 +91,8 @@ unsigned char Posicao_Servos_Antiga[SERVO_MAX]; //posicao anterior de cada servo
 unsigned char Estado_Servo;
 unsigned int  decSegServo = 0;
 unsigned char pDecSegServo = DECSEG_SERVO_WRITE; //intervalo entre escritas do servo em decimos de segundos
-const char    PosicaoServo[ANGULOS_SERVO] = {45, 135};
+const char    AnguloServo[ANGULOS_SERVO+1] = {SERVO_ANGULO0, SERVO_ANGULO1, SERVO_ANGULO2};
+unsigned char RegraAplicada = 0;
 //Servo meuservo; 
 
 //cria o objeto para controlar o servo (maximo de 12 objetos)
@@ -105,7 +107,6 @@ unsigned char PosHistorico;
 float media;
 unsigned int decSegSensor=0;
 unsigned int pDecSegSensor = DECSEG_SENSOR;
-
 ////////////////////////////////////////////////Maquina de estados//////////////////////////////////////////////////
 unsigned char Estado;
 unsigned char PosGeneBusca;
@@ -168,6 +169,12 @@ void setup_servo()
   Servo2.attach(PINO_SERVO2);
   Servo3.attach(PINO_SERVO3);
   Servo4.attach(PINO_SERVO4);
+  unsigned char i;
+  for(i=0;i<SERVO_MAX;i++)
+  {
+    Posicao_Servos[i] = 0;
+    Posicao_Servos_Antiga[i] = 0;
+  }
 }
 
 void setup_sensor()
