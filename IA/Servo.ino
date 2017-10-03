@@ -12,12 +12,14 @@
       case 1: //modo manual do servo
         if ((pos >= 0)&&(pos <= 180))
         {
+          /*
           //soh escreve no registrador do servo se o valor for diferente; 
           int posrev = 180-pos;
           if(Servo1.read() != posrev) Servo1.write(posrev);
           if(Servo2.read() != pos) Servo2.write(pos);
           if(Servo3.read() != posrev) Servo3.write(posrev);
           if(Servo4.read() != pos) Servo4.write(pos);
+          */
         }
       break;
 
@@ -40,6 +42,8 @@
 
       case 3: //modo com posicoes distintas nos 4 servos
               //obs: os valores de Posicao_Servos[] sao chars, para converter para int subtrair 48
+              
+              /*
         if(Posicao_Servos[0] != Posicao_Servos_Antiga[0])
         {
           Posicao_Servos_Antiga[0] = Posicao_Servos[0];
@@ -60,6 +64,7 @@
           Posicao_Servos_Antiga[3] = Posicao_Servos[3];
           Servo4.write(AnguloServo[Posicao_Servos[3]-47]);
         }
+        */
       break;
       
     }

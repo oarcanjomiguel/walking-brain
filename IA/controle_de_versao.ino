@@ -22,6 +22,7 @@ Serial: 9600
     - atualiza a posicao do servo de acordo com a entrada (so atualiza se a posicao atual difere do comandado)
     - faz o calculo das possiveis posicoes de acordo com o numero de possibilidades do gene
     - testa se o servo esta habilitado
+- Mudar a escrita nos servos para ser suave e gradual. Utilizar as variaveis glob
 
 //SENSOR
 - Funcao que salva media da distancia quando todos os valores do buffer de distancias estao dentro de +-delta

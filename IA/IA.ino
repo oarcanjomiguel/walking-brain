@@ -86,8 +86,9 @@ int minuto = 0;                     //tempo do minuto do relogio
 
 ///////////////////////////////////////////////////////servo///////////////////////////////////////////////////////
 int pos = 0;  //posicao do servo de 0 a 180
-unsigned char Posicao_Servos[SERVO_MAX];        //posicao de cada servo motor
-unsigned char Posicao_Servos_Antiga[SERVO_MAX]; //posicao anterior de cada servo motor pra saber se precisa atualizar
+unsigned char PosicaoServosAlvo[SERVO_MAX];     //posicao alvo(final desejada) de cada servo motor
+unsigned char PosicaoServosAtual[SERVO_MAX];   //posicao atual dos servos (vai seguindo gradualmente a PosicaoServosAlvo[x])
+//unsigned char Posicao_Servos_Antiga[SERVO_MAX]; //posicao anterior de cada servo motor pra saber se precisa atualizar
 unsigned char Estado_Servo;
 unsigned int  decSegServo = 0;
 unsigned char pDecSegServo = DECSEG_SERVO_WRITE; //intervalo entre escritas do servo em decimos de segundos
@@ -172,7 +173,7 @@ void setup_servo()
   unsigned char i;
   for(i=0;i<SERVO_MAX;i++)
   {
-    Posicao_Servos[i] = 0;
+    PosicaoServos[i] = 0;
     Posicao_Servos_Antiga[i] = 0;
   }
 }
@@ -212,5 +213,5 @@ void loop()
   TrataTimer();
   Estados();
   TrataSensor();
-  TrataServo();
+  //TrataServo(); /////////////////////////////////////////////////////////////////DESCOMENTAR DEPOIS ///////////////////////////
 }

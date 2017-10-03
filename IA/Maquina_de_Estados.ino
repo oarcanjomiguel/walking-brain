@@ -275,15 +275,29 @@ void Estados()
     case 1:
       if(byte_recebido == '0')
       {
-        pos = SERVO_ANGULO0;
+        Servo1.write(90);
+        Servo2.write(90);
+        Servo3.write(90);
+        Servo4.write(90);
+        //pos = SERVO_ANGULO0;
       }
       if(byte_recebido == '1')
       {
-        pos = SERVO_ANGULO1;
+        Servo1.write(70);
+        Servo2.write(70);
+        Servo3.write(70);
+        Servo4.write(70);
+        
+        //pos = SERVO_ANGULO1;
       }
       if(byte_recebido == '2')
       {
-        pos = SERVO_ANGULO2;
+        Servo1.write(110);
+        Servo2.write(110);
+        Servo3.write(110);
+        Servo4.write(110);
+        
+        //pos = SERVO_ANGULO2;
       }
       
     break;
