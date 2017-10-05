@@ -5,26 +5,33 @@
  void TrataServo()
  {
   unsigned char i;
-  if(decSegServo > pDecSegServo)
+  if(centSegServo > pCentSegServo)
   {
     switch(Estado_Servo)
     {
       case 1: //modo manual do servo
-        if ((pos >= 0)&&(pos <= 180))
+
+        for(i=0;i<SERVO_MAX;i++)
         {
-          /*
-          //soh escreve no registrador do servo se o valor for diferente; 
-          int posrev = 180-pos;
-          if(Servo1.read() != posrev) Servo1.write(posrev);
-          if(Servo2.read() != pos) Servo2.write(pos);
-          if(Servo3.read() != posrev) Servo3.write(posrev);
-          if(Servo4.read() != pos) Servo4.write(pos);
-          */
+          if(posicaoServosAlvo[i] > posicaoServosAtual[i])
+          {
+            posicaoServosAtual[i]++;
+            Servos[i].write(posicaoServosAtual[i]);
+            //Serial.print("+");
+          }
+          if(posicaoServosAlvo[i] < posicaoServosAtual[i])
+          {
+            posicaoServosAtual[i]--;
+            Servos[i].write(posicaoServosAtual[i]);
+            //Serial.print("-");
+          }
         }
+        
       break;
 
       case 2: //modo automatico do servo
-        if(Servo1.read() == AnguloServo[1])
+      /*
+        if(Servo[0].read() == AnguloServo[1])
         {
           Servo1.write(AnguloServo[2]);
           Servo2.write(AnguloServo[2]);
@@ -38,6 +45,7 @@
           Servo3.write(AnguloServo[1]);
           Servo4.write(AnguloServo[1]);
         }
+        */
       break;
 
       case 3: //modo com posicoes distintas nos 4 servos
@@ -68,7 +76,7 @@
       break;
       
     }
-    decSegServo = 0;
+    centSegServo = 0;
   }
  }
 
@@ -84,6 +92,11 @@ void PosicionaServos(unsigned char servonum, unsigned char posic)
   // numero do servo eh valido
   if(servonum < SERVO_MAX)
   {
-    
+    //a posicao eh valida
+    if(posic < ANGULOS_SERVO)
+    {
+      //posic + 1 porque a posicao 0 eh 90 graus (posicao de descanso)
+      posicaoServosAlvo[servonum] = AnguloServo[posic+1];
+    }
   }
 }

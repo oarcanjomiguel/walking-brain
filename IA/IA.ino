@@ -16,7 +16,7 @@
 #define PINO_SERVO2 3
 #define PINO_SERVO3 4
 #define PINO_SERVO4 5
-#define DECSEG_SERVO_WRITE 3
+#define CENTSEG_SERVO_WRITE 1
 #define ANGULOS_SERVO 2
 const int SERVO_ANGULO0 = 90;
 const int SERVO_ANGULO1 = 70;
@@ -75,7 +75,11 @@ const int SERVO_ANGULO2 = 110;
  * /////////////////////// VARIAVEIS GLOBAIS ///////////////////////////////////////
  * /////////////////////////////////////////////////////////////////////////////////
  */
-//RELOGIO
+//////////////////////////////////////////////////////RELOGIO//////////////////////////////////////////////////////
+unsigned long centSegAtual = 0;
+unsigned long centSegAnterior = 0;  //centesimos de segundo para movimentacao suave do servo motor
+unsigned int centSeg = 0;
+unsigned long centSegServo = 0;
 unsigned long decSegAtual = 0;      // salva o valor atual em decimos de segundo do tempo de operacao
 unsigned long decSegAnterior = 0;   //valor anterior do tempo de operacao em decimos de segundo
 unsigned int decSeg = 0;
@@ -86,21 +90,21 @@ int minuto = 0;                     //tempo do minuto do relogio
 
 ///////////////////////////////////////////////////////servo///////////////////////////////////////////////////////
 int pos = 0;  //posicao do servo de 0 a 180
-unsigned char PosicaoServosAlvo[SERVO_MAX];     //posicao alvo(final desejada) de cada servo motor
-unsigned char PosicaoServosAtual[SERVO_MAX];   //posicao atual dos servos (vai seguindo gradualmente a PosicaoServosAlvo[x])
+unsigned char posicaoServosAlvo[SERVO_MAX];     //posicao alvo(final desejada) de cada servo motor
+unsigned char posicaoServosAtual[SERVO_MAX];   //posicao atual dos servos (vai seguindo gradualmente a PosicaoServosAlvo[x])
 //unsigned char Posicao_Servos_Antiga[SERVO_MAX]; //posicao anterior de cada servo motor pra saber se precisa atualizar
 unsigned char Estado_Servo;
-unsigned int  decSegServo = 0;
-unsigned char pDecSegServo = DECSEG_SERVO_WRITE; //intervalo entre escritas do servo em decimos de segundos
+//unsigned int  decSegServo = 0;
+unsigned char pCentSegServo = CENTSEG_SERVO_WRITE; //intervalo entre escritas do servo em decimos de segundos
 const char    AnguloServo[ANGULOS_SERVO+1] = {SERVO_ANGULO0, SERVO_ANGULO1, SERVO_ANGULO2};
 unsigned char RegraAplicada = 0;
 //Servo meuservo; 
 
 //cria o objeto para controlar o servo (maximo de 12 objetos)
-Servo Servo1;
-Servo Servo2;
-Servo Servo3;
-Servo Servo4;
+Servo Servos[SERVO_MAX];
+//Servo Servo2;
+//Servo Servo3;
+//Servo Servo4;
 
 ///////////////////////////////////////////////////////sensor///////////////////////////////////////////////////////
 long Historico[TAMANHO_BUFFER];
@@ -165,16 +169,16 @@ struct PopulacaoAG PopAG;
 
 void setup_servo()
 {
-  //meuservo.attach(PINO_SERVO); //Inicializa o pino 9 como pwm para o servo motor
-  Servo1.attach(PINO_SERVO1);
-  Servo2.attach(PINO_SERVO2);
-  Servo3.attach(PINO_SERVO3);
-  Servo4.attach(PINO_SERVO4);
   unsigned char i;
+  //meuservo.attach(PINO_SERVO); //Inicializa o pino 9 como pwm para o servo motor
+  //Servo2.attach(PINO_SERVO2);
+  //Servo3.attach(PINO_SERVO3);
+  //Servo4.attach(PINO_SERVO4);
   for(i=0;i<SERVO_MAX;i++)
   {
-    PosicaoServos[i] = 0;
-    Posicao_Servos_Antiga[i] = 0;
+    Servos[i].attach(PINO_SERVO1+i);
+    posicaoServosAlvo[i] = SERVO_ANGULO0;
+    posicaoServosAtual[i] = SERVO_ANGULO0;
   }
 }
 
@@ -213,5 +217,5 @@ void loop()
   TrataTimer();
   Estados();
   TrataSensor();
-  //TrataServo(); /////////////////////////////////////////////////////////////////DESCOMENTAR DEPOIS ///////////////////////////
+  TrataServo();
 }

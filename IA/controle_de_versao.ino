@@ -59,4 +59,5 @@ Servo
   - adaptado o codigo de acionamento manual e automatico dos motores
   - Adequado para conter variavel de posicao com 4 espacos
   - Criada variavel de posicao de servos antiga para controlar se muda registrador ou nao
+  - Objetos de Servo motor criados aglutinados em um array atraves de "Servo Servos[SERVO_MAX];"
   */

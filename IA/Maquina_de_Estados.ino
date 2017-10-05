@@ -67,7 +67,7 @@ void Estados()
           if(Estado_Servo != 1)
           {
             Estado_Servo = 1;
-            decSegServo = 0; //iniciou atividade do Servo
+            centSegServo = 0; //iniciou atividade do Servo
             pos = SERVO_ANGULO0;
             Serial.println("Servo ligado manual");
           }
@@ -81,7 +81,7 @@ void Estados()
         case 'a':
           Estado = ESTADO_SERVO_AUTOMATICO;
           Estado_Servo = 2;
-          decSegServo = 0; //iniciou atividade do Servo
+          //decSegServo = 0; //iniciou atividade do Servo
           Serial.println("Servo ligado automatico");
         break;
 
@@ -102,8 +102,8 @@ void Estados()
       if((byte_recebido >= '0') && (byte_recebido <= '9'))
       {
         //Serial.println(byte_recebido, DEC);
-        pDecSegServo = byte_recebido - 48;
-        Serial.println(pDecSegServo, DEC);
+        pCentSegServo = byte_recebido - 48;
+        Serial.println(pCentSegServo, DEC);
       }
     break;
     
@@ -255,9 +255,14 @@ void Estados()
           RegraAplicada = RegraAplicada + (byte_recebido - 48);
           if(RegraAplicada <= POPULACAO_MAX) //individuo eh valido
           {
-            Serial.print("Regra Aplicada: ");
-            Serial.println(RegraAplicada,DEC);
-            //AplicaRegra(
+            if(DebugAG==1)
+            {
+              Serial.print("Regra Aplicada: ");
+              Serial.println(RegraAplicada,DEC);
+              for(i=ANTECEDENTE;i<ANTECEDENTE+CONSEQUENTE;i++) Serial.print(Pop.Cromossomo[RegraAplicada][i],DEC);
+              Serial.println("");
+            }
+            AplicaRegra(
           }
           Estado = ESTADO_MENU_IA;
         }
@@ -275,29 +280,15 @@ void Estados()
     case 1:
       if(byte_recebido == '0')
       {
-        Servo1.write(90);
-        Servo2.write(90);
-        Servo3.write(90);
-        Servo4.write(90);
-        //pos = SERVO_ANGULO0;
+        for(i=0;i<SERVO_MAX;i++) posicaoServosAlvo[i] = SERVO_ANGULO0;
       }
       if(byte_recebido == '1')
       {
-        Servo1.write(70);
-        Servo2.write(70);
-        Servo3.write(70);
-        Servo4.write(70);
-        
-        //pos = SERVO_ANGULO1;
+        for(i=0;i<SERVO_MAX;i++) posicaoServosAlvo[i] = SERVO_ANGULO1;
       }
       if(byte_recebido == '2')
       {
-        Servo1.write(110);
-        Servo2.write(110);
-        Servo3.write(110);
-        Servo4.write(110);
-        
-        //pos = SERVO_ANGULO2;
+        for(i=0;i<SERVO_MAX;i++) posicaoServosAlvo[i] = SERVO_ANGULO2;
       }
       
     break;

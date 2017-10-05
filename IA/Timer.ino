@@ -4,13 +4,23 @@
  */
 void TrataTimer()
 {
-  decSegAtual = millis()/100;
-  if (decSegAtual>decSegAnterior)
+  centSegAtual = millis()/10;
+  if(centSegAtual > centSegAnterior)
   {
-    decSeg += decSegAtual - decSegAnterior;
-    decSegAnterior = decSegAtual;
-    decSegServo++;
+    centSeg++;
+    centSegServo++;
+    centSegAnterior = centSegAtual;
+  }
+  //decSegAtual = millis()/100;
+  //if (decSegAtual>decSegAnterior)
+  if(centSeg>=10)
+  {
+    //decSeg += decSegAtual - decSegAnterior;
+    decSeg++;
+    //decSegAnterior = decSegAtual;
+    //decSegServo++;
     decSegSensor++;
+    centSeg = 0;
   }
   if(decSeg>=10)
   {
