@@ -47,6 +47,7 @@ void Estados()
           Serial.println("[bxxxx]: busca regras compativeis e calcula Bid");
           Serial.println("[c]: crossover dummy");
           Serial.println("[m]: mutacao dummy");
+          Serial.println("[l]: Le Ambiente");
           Serial.println("[axx]: Aplica regra xx");
           Serial.println("[z]: retorna ao menu principal");
         break;
@@ -140,6 +141,10 @@ void Estados()
           PosGeneBusca=0;
         break;
         
+        case 'l':
+          Serial.println(LeAmbiente(),DEC);
+        break;
+        
         case 'z':
           Serial.println("Menu principal");
           Estado = ESTADO_MENU;
@@ -203,37 +208,7 @@ void Estados()
       }
       if(PosGeneBusca >= ANTECEDENTE)
       {
-        if(DebugAG==1) { Serial.print("Regras encontradas: "); }
-        Leilao.QuantidadeParticipantes = BuscaRegras(MensagemAmbiente);
-        if(DebugAG==1)
-        {
-          Serial.print(Leilao.QuantidadeParticipantes,DEC);
-          Serial.print(" (");
-        }
-        for(i=0;i<Leilao.QuantidadeParticipantes;i++)
-        {
-          if(DebugAG==1)
-          {
-            Serial.print(Leilao.RegrasAplicaveis[i],DEC);
-            Serial.print(":");
-          }
-          Leilao.Bidt[i] = CalculaBidt(Leilao.RegrasAplicaveis[i]);
-          //Serial.print(Leilao.Bidt[i],DEC);
-          //Serial.print(";");
-          Leilao.eBidt[i] = CalculaeBidt(Leilao.Bidt[i]);
-          if(DebugAG==1) 
-          {
-            Serial.print(Leilao.eBidt[i],DEC);
-            if(i!=Leilao.QuantidadeParticipantes-1) { Serial.print(" "); }
-          }
-        }
-        if(DebugAG==1) { Serial.println(")"); }
-        Leilao.Vencedor = Leilao.RegrasAplicaveis[BuscaVencedor(Leilao.QuantidadeParticipantes)];
-        if(DebugAG==1) 
-        {
-          Serial.print("Vencedor: ");
-          Serial.println(Leilao.Vencedor,DEC);
-        }
+        ExecutaLeilao();
         //Aplica a regra vencedora nos servo-motores e mede a recompensa (salva em Leilao.Recompensa)
         AplicaRegra(Leilao.Vencedor);
         //cobra as taxas de cada elemento da populacao
@@ -255,14 +230,17 @@ void Estados()
           RegraAplicada = RegraAplicada + (byte_recebido - 48);
           if(RegraAplicada <= POPULACAO_MAX) //individuo eh valido
           {
+            if(Estado_Servo!=3) Estado_Servo = 3;
             if(DebugAG==1)
             {
               Serial.print("Regra Aplicada: ");
               Serial.println(RegraAplicada,DEC);
-              for(i=ANTECEDENTE;i<ANTECEDENTE+CONSEQUENTE;i++) Serial.print(Pop.Cromossomo[RegraAplicada][i],DEC);
-              Serial.println("");
             }
-            AplicaRegra(
+            for(i=ANTECEDENTE;i<ANTECEDENTE+CONSEQUENTE;i++)
+            {
+              PosicionaServos(i-ANTECEDENTE,Pop.Cromossomo[RegraAplicada][i]);
+              if(DebugAG==1) Serial.print(Pop.Cromossomo[RegraAplicada][i],DEC);
+            }
           }
           Estado = ESTADO_MENU_IA;
         }

@@ -23,6 +23,7 @@ const int SERVO_ANGULO1 = 70;
 const int SERVO_ANGULO2 = 110;
 //numero maximo de servos conectados ao hardware
 #define SERVO_MAX 4
+#define DELTA_SERVO 1
 
 ///////////////////////////////////////////////////////sensor///////////////////////////////////////////////////////
 #define trigPin 13            // pino de trigger do sensor
@@ -62,9 +63,17 @@ const int SERVO_ANGULO2 = 110;
 #define ESTADOS_GENE 2
 #define DONT_CARE_SYMBOL ESTADOS_GENE
 //1-servomotores conectados X 0-servomotores desconectados (gera recompensa aleatoria)
-#define FEEDBACK_ATIVO 0
+#define FEEDBACK_ATIVO 1
 //taxa de proporcionalidade do Bidt a ser cobrada de todos os participantes do leilao
 #define BID_TAX 0.0030
+
+#define ESTADOSC_AGUARDA 0
+#define ESTADOSC_INICIALIZA 1
+#define ESTADOSC_ESTABILIZA 2
+#define ESTADOSC_MEDE_ANTES 3
+#define ESTADOSC_APLICA 4
+#define ESTADOSC_MEDE_DEPOIS 5
+#define COBRA_TAXAS 6
 
 ///////////////////////////////////////////////////////ALGORITMO GENETICO///////////////////////////////////////////////////////
 #define TAXA_MUTACAO 0.1
@@ -98,7 +107,7 @@ unsigned char Estado_Servo;
 unsigned char pCentSegServo = CENTSEG_SERVO_WRITE; //intervalo entre escritas do servo em decimos de segundos
 const char    AnguloServo[ANGULOS_SERVO+1] = {SERVO_ANGULO0, SERVO_ANGULO1, SERVO_ANGULO2};
 unsigned char RegraAplicada = 0;
-//Servo meuservo; 
+unsigned char servoPronto;
 
 //cria o objeto para controlar o servo (maximo de 12 objetos)
 Servo Servos[SERVO_MAX];
@@ -144,7 +153,7 @@ unsigned char MensagemAmbiente[ANTECEDENTE];
 //static const float SigmaBid = 0.1;
 static const float SigmaBid = 0.2;
 float Taxa_v = 1 - pow(0.5,1.0/ITERACOES_MEIA_VIDA); //taxa de meia vida a ser cobrada a cada iteracao
-
+unsigned char EstadoSistemaClassificador = 0;
 ////////////////////////////////////////////////ALGORITMO GENETICO//////////////////////////////////////////////////
 unsigned char individuos_crossover[2][ANTECEDENTE+CONSEQUENTE];
 struct PopulacaoAG
@@ -218,4 +227,5 @@ void loop()
   Estados();
   TrataSensor();
   TrataServo();
+  TrataSistemaClassificador();
 }

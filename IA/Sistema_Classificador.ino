@@ -193,13 +193,13 @@ void AplicaRegra(unsigned int ind)
   
   if (FEEDBACK_ATIVO)
   {
-    for(i=ANTECEDENTE;i<CONSEQUENTE;i++)
+    //Leilao.DistanciaInicial = media;
+    for(i=ANTECEDENTE;i<ANTECEDENTE+CONSEQUENTE;i++)
     {
-      Leilao.DistanciaInicial = media;
       PosicionaServos(i-ANTECEDENTE,Pop.Cromossomo[ind][i]);
     }
-    Leilao.DistanciaFinal = media;
-    Leilao.Recompensa = MedeRecompensa();
+    //Leilao.DistanciaFinal = media;
+    //Leilao.Recompensa = MedeRecompensa();
   }
   else
   {
@@ -271,7 +271,114 @@ void CobraTaxas(void)
   }
   
 }
+void ExecutaLeilao(void)
+{
+  unsigned int i;
+  if(DebugAG==1) { Serial.print("Regras encontradas: "); }
+  Leilao.QuantidadeParticipantes = BuscaRegras(MensagemAmbiente);
+  if(DebugAG==1)
+  {
+    Serial.print(Leilao.QuantidadeParticipantes,DEC);
+    Serial.print(" (");
+  }
+  for(i=0;i<Leilao.QuantidadeParticipantes;i++)
+  {
+    if(DebugAG==1)
+    {
+      Serial.print(Leilao.RegrasAplicaveis[i],DEC);
+      Serial.print(":");
+    }
+    Leilao.Bidt[i] = CalculaBidt(Leilao.RegrasAplicaveis[i]);
+    //Serial.print(Leilao.Bidt[i],DEC);
+    //Serial.print(";");
+    Leilao.eBidt[i] = CalculaeBidt(Leilao.Bidt[i]);
+    if(DebugAG==1) 
+    {
+      Serial.print(Leilao.eBidt[i],DEC);
+      if(i!=Leilao.QuantidadeParticipantes-1) { Serial.print(" "); }
+    }
+  }
+  if(DebugAG==1) { Serial.println(")"); }
+  Leilao.Vencedor = Leilao.RegrasAplicaveis[BuscaVencedor(Leilao.QuantidadeParticipantes)];
+  if(DebugAG==1) 
+  {
+    Serial.print("Vencedor: ");
+    Serial.println(Leilao.Vencedor,DEC);
+  }
+}
+/*
+ * Funcao:  char LeAmbiente(void)
+ * In:      void
+ * Out:     char status se as leituras do ambiente sao compativeis com os padroes estabelecidos
+ * Desc.:   Le as posicoes dos servo motores e verifica se essas leituras estao de acordo com os
+ *          valores de AnguloServo[]
+ */
+char LeAmbiente(void)
+{
+  
+  unsigned char i,j,achou;
+  unsigned char posic[SERVO_MAX];
+  for(i=0;i<SERVO_MAX;i++)
+  {
+    posic[i] = Servos[i].read();
+    achou=0;
+    for(j=1;j<=ANGULOS_SERVO;j++)
+    {
+      if(posic[i]==AnguloServo[j]) 
+      {
+        achou = j;
+        Serial.print("Angulo encontrado: ");
+        Serial.println(AnguloServo[achou],DEC);
+      }
+    }
+  }
+   
+}
 
+/*
+ * Funcao:  void TrataSistemaClassificador(void)
+ * In:      void
+ * Out:     void
+ * Desc.:   Maquina de estados do sistema classificador. Eh disparada pela maquina de estados principal
+ *          faz a aplicacao de regras (comeca com uma posicao aleatoria), leilao, cobranca de taxas e 
+ *          evolucao (crossover, mutacao, substituicao)
+ */
+void TrataSistemaClassificador(void)
+{
+  unsigned int i;
+  switch(EstadoSistemaClassificador)
+  {
+    case ESTADOSC_AGUARDA:
+      
+    break;
+
+    case ESTADOSC_INICIALIZA:
+      InicializaPopulacao(Pop.QuantidadeIndividuos);
+      //Aleatoriza as posicoes iniciais dos servomotores
+      Estado_Servo = 3;
+      for(i=0;i<SERVO_MAX;i++)
+      {
+        PosicionaServos(i,random(ESTADOS_GENE));
+      }
+      servoPronto=0;
+      EstadoSistemaClassificador = ESTADOSC_ESTABILIZA;
+    break;
+
+    case ESTADOSC_ESTABILIZA:
+      if(servoPronto==1)
+      {
+        if(SensorEstavel()==1)
+        {
+          
+          Leilao.DistanciaInicial = media;
+          ExecutaLeilao();
+          AplicaRegra(Leilao.Vencedor); 
+        }
+      }
+    break;
+    
+  }
+}
 
 
 

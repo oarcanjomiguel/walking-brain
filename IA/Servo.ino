@@ -15,13 +15,13 @@
         {
           if(posicaoServosAlvo[i] > posicaoServosAtual[i])
           {
-            posicaoServosAtual[i]++;
+            posicaoServosAtual[i] = posicaoServosAtual[i] + DELTA_SERVO;
             Servos[i].write(posicaoServosAtual[i]);
             //Serial.print("+");
           }
-          if(posicaoServosAlvo[i] < posicaoServosAtual[i])
+          else if(posicaoServosAlvo[i] < posicaoServosAtual[i])
           {
-            posicaoServosAtual[i]--;
+            posicaoServosAtual[i] = posicaoServosAtual[i] - DELTA_SERVO;
             Servos[i].write(posicaoServosAtual[i]);
             //Serial.print("-");
           }
@@ -30,49 +30,30 @@
       break;
 
       case 2: //modo automatico do servo
-      /*
-        if(Servo[0].read() == AnguloServo[1])
-        {
-          Servo1.write(AnguloServo[2]);
-          Servo2.write(AnguloServo[2]);
-          Servo3.write(AnguloServo[2]);
-          Servo4.write(AnguloServo[2]);
-        }
-        else
-        {
-          Servo1.write(AnguloServo[1]);
-          Servo2.write(AnguloServo[1]);
-          Servo3.write(AnguloServo[1]);
-          Servo4.write(AnguloServo[1]);
-        }
-        */
+      
       break;
 
       case 3: //modo com posicoes distintas nos 4 servos
               //obs: os valores de Posicao_Servos[] sao chars, para converter para int subtrair 48
-              
-              /*
-        if(Posicao_Servos[0] != Posicao_Servos_Antiga[0])
+        servoPronto=1;      
+        for(i=0;i<SERVO_MAX;i++)
         {
-          Posicao_Servos_Antiga[0] = Posicao_Servos[0];
-          Servo1.write(AnguloServo[Posicao_Servos[0]-47]);
+          if(posicaoServosAlvo[i] > posicaoServosAtual[i])
+          {
+            servoPronto = 0;
+            posicaoServosAtual[i]++;
+            Servos[i].write(posicaoServosAtual[i]);
+            //Serial.print("+");
+          }
+          if(posicaoServosAlvo[i] < posicaoServosAtual[i])
+          {
+            servoPronto=0;
+            posicaoServosAtual[i]--;
+            Servos[i].write(posicaoServosAtual[i]);
+            //Serial.print("-");
+          }
+          
         }
-        if(Posicao_Servos[1] != Posicao_Servos_Antiga[1])
-        {
-          Posicao_Servos_Antiga[1] = Posicao_Servos[1];
-          Servo2.write(AnguloServo[Posicao_Servos[1]-47]);
-        }
-        if(Posicao_Servos[2] != Posicao_Servos_Antiga[2])
-        {
-          Posicao_Servos_Antiga[2] = Posicao_Servos[2];
-          Servo3.write(AnguloServo[Posicao_Servos[2]-47]);
-        }
-        if(Posicao_Servos[3] != Posicao_Servos_Antiga[3])
-        {
-          Posicao_Servos_Antiga[3] = Posicao_Servos[3];
-          Servo4.write(AnguloServo[Posicao_Servos[3]-47]);
-        }
-        */
       break;
       
     }
@@ -97,6 +78,13 @@ void PosicionaServos(unsigned char servonum, unsigned char posic)
     {
       //posic + 1 porque a posicao 0 eh 90 graus (posicao de descanso)
       posicaoServosAlvo[servonum] = AnguloServo[posic+1];
+      if(DebugAG == 1)
+      {
+        Serial.print("Servo: ");
+        Serial.print(servonum,DEC);
+        Serial.print(" posicao: ");
+        Serial.println(posic,DEC);
+      }
     }
   }
 }

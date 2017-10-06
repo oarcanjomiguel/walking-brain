@@ -11,11 +11,11 @@ Serial: 9600
 - Fazer modulo de savar config e parametros na EEPROM
 - Fazer menu de config de parametros com opcao de verbose debug para cada modulo
   - geracao de individuos, calculo dos lances, troca de geracoes, evolucao etc
-- Fazer numero de servo motores variavel e configuravel por parametro
 
 //SISTEMA CLASSIFICADOR
 - Funcao AplicaRegra que atualiza as posicoes dos servo-motores de acordo com a regra vencedora do leilao
   e mede a variacao da distancia para aplicar recompensa
+- Resolver como garantir que a leitura da media do sensor de distancias esta estavel antes de utiliza-la no AG
 
 //SERVO
 - Funcao PosicionaServos:
@@ -60,4 +60,5 @@ Servo
   - Adequado para conter variavel de posicao com 4 espacos
   - Criada variavel de posicao de servos antiga para controlar se muda registrador ou nao
   - Objetos de Servo motor criados aglutinados em um array atraves de "Servo Servos[SERVO_MAX];"
+  - Fazer numero de servo motores variavel e configuravel por parametro
   */

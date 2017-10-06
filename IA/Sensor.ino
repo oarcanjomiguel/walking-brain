@@ -47,25 +47,20 @@ void TrataSensor()
         media += Historico[i];
       }
       media = media/TAMANHO_BUFFER;
-      /*
-      //codigo para o servo seguir o sensor
-      if(media > 180 ) { pos = 180; }
-      else { pos = media; }
-      */
     }
   }
 }
 
 /*
- * Funcao:  long MediaSensor(void)
+ * Funcao:  char SensorEstavel(void)
  * In:      void
  * Out:     long media das distancias do buffer
- * Desc.:   retorna o valor da media das distancias presentes no buffer de leituras
- *          caso essas distancias estejam a no maximo 2*DELTA_SENSOR uma da outra
+ * Desc.:   retorna 1 caso o valor da media das distancias em relacao as leituras 
+ *          presentes no buffer estejam a no maximo 2*DELTA_SENSOR uma da outra
  */
-char MediaSensor(void)
+char SensorEstavel(void)
 {
-  unsigned char i,j;
+  unsigned char i;
   unsigned char estavel = 1;
   for(i=0;i<TAMANHO_BUFFER;i++)
   {
