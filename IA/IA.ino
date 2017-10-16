@@ -51,7 +51,7 @@ const int SERVO_ANGULO2 = 110;
 #define POPULACAO_DEFAULT 20
 #define ANTECEDENTE 4
 #define CONSEQUENTE 4
-#define ENERGIA_INICIAL 100.0
+#define ENERGIA_INICIAL 200.0
 #define K0 0.1
 #define K1 0.1
 #define K2 0.0833
@@ -173,7 +173,7 @@ struct PopulacaoAG
   unsigned char Cromossomo[POPULACAO_AG_MAX][ANTECEDENTE+CONSEQUENTE];
 };
 unsigned char PaiMae[2]; //indice no vetor Pop dos dois individuos com maior energia pra fazer crossover
-unsigned char Ancora[CROSSOVER_MAX*2]; //indice no vetor Pop dos dois individuos com menor energia que serao substituidos
+unsigned char Ancora[CROSSOVER_MAX*2]; //indice no vetor Pop dos n individuos com menor energia que serao substituidos
 
 ////////////////////////////////////////////////      DEBUGS      //////////////////////////////////////////////////
 unsigned char DebugAG = 0;

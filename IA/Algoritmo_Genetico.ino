@@ -84,18 +84,20 @@ void Crossover(unsigned char ind[2])
 
 /*
  * Funcao:  void Mutacao(float taxa)
- * In:      float taxa: taxa de mutacao (quantidade de elementos do vetor Pop que serao mutados)
+ * In:      float taxa: taxa de mutacao (quantidade de elementos do vetor PopAG que serao mutados)
  * Out:     void
- * Desc.:   Seleciona aleatoriamente uma quantidade de genes igual a taxa*Pop.QuantidadeIndividuos*(ANTECEDENTE+CONSEQUENTE)
+ * Desc.:   Seleciona aleatoriamente uma quantidade de genes igual a taxa*PopAG.QuantidadeIndividuos*(ANTECEDENTE+CONSEQUENTE)
  *          para ser mutado. Observa que se o gene esta no antecedente tem 2 opcoes de mutacao, caso esteja
  *          depois do antecedente do individuo, tem somente uma opcao de mutacao
  */
 void Mutacao(float taxa)
 {
   unsigned int quantidade_genes_mutados;
-  unsigned int i;
+  
+  unsigned int i,j;
   unsigned int quantidade_genes;
-
+  unsigned char tentativas;
+  
   quantidade_genes = PopAG.QuantidadeIndividuos*(ANTECEDENTE+CONSEQUENTE);
   quantidade_genes_mutados = taxa * quantidade_genes;
   if(DebugAG == 1)
@@ -103,16 +105,41 @@ void Mutacao(float taxa)
     Serial.print("Quantidade de genes mutados: ");
     Serial.println(quantidade_genes_mutados,DEC);
   }
-  unsigned int genes_mutados[quantidade_genes_mutados];
-
-  Serial.print("Genes mutados: ");
+  
+  unsigned int genes_mutados[quantidade_genes_mutados];       //indice dentro do individuo do gene a ser mutado
+  unsigned char individuos_mutados[quantidade_genes_mutados]; //indice do individuo dentro do vetor PopAG que tera um gene mutado
+  unsigned char gene_novo[quantidade_genes_mutados];          //novo valor do gene mutado
+  
+  if(DebugAG==1) Serial.print("Genes mutados: ");
   for(i=0;i<quantidade_genes_mutados;i++)
   {
-    genes_mutados[i] = random(quantidade_genes);
-    Serial.print(genes_mutados[i],DEC);
-    Serial.print(" ");
+    //sorteia os individuos que terao seus genes mutados
+    individuos_mutados[i] = random(PopAG.QuantidadeIndividuos);
+    //sorteia o gene dentro do individuo i que sera mutado
+    genes_mutados[i] = random(ANTECEDENTE+CONSEQUENTE);
+    if(DebugAG==1)
+    {
+      Serial.print(genes_mutados[i],DEC);
+      Serial.print(" ");
+    }
+    //muta os genes
+    gene_novo[i] = PopAG.Cromossomo[individuos_mutados[i]][genes_mutados[i]];
+    tentativas = 0;
+    while((gene_novo[i] == PopAG.Cromossomo[individuos_mutados[i]][genes_mutados[i]])&&(tentativas<100))
+    {
+      //caso tem don't care
+      if(genes_mutados[i]<ANTECEDENTE) 
+      {
+        gene_novo[i] = random(ESTADOS_GENE+1);
+      }
+      else //nao tem don't care
+      {
+        gene_novo[i] = random(ESTADOS_GENE);
+      }
+      tentativas++;
+    }
   }
-  Serial.println("");
+  if(DebugAG==1) Serial.println("");
 }
 /*
  * Funcao:  void OrdenaFitness(void)
@@ -184,4 +211,31 @@ void OrdenaFitness(void)
     if(DebugAG == 1) Serial.print(Ancora[i],DEC);
   }
   if(DebugAG == 1) Serial.println("");
+}
+/*
+ * Funcao:  void InsereCrossover(void)
+ * In:      void
+ * Out:     void
+ * Desc.:   Insere os individuos gerados por crossover(PopAG) na populacao:
+ *            -Substitui no lugar dos individuos indicados por Ancora[]
+ *            -Calucula a energia St como sendo a media das energias dos pais
+ *            -Calcula a especificidade da nova regra
+ */
+void InsereCrossover(void)
+{
+  unsigned int i,j;
+  unsigned char numdcare=0;
+  for(i=0;i<PopAG.QuantidadeIndividuos;i++)
+  {
+    numdcare=0;
+    for(j=0;j<ANTECEDENTE+CONSEQUENTE;j++)
+    {
+      //copia o cromossomo para a populacao no lugar dos piores individuos
+      Pop.Cromossomo[Ancora[i]][j] = PopAG.Cromossomo[i][j];
+      //conta o numero de don't care symbols para calculo do Spec
+      if(PopAG.Cromossomo[i][j] == ESTADOS_GENE) numdcare++;
+    }
+    Pop.Spec[Ancora[i]] = (ANTECEDENTE - numdcare)*1.0/ANTECEDENTE;
+    Pop.St[Ancora[i]] = ( Pop.St[PaiMae[0]] + Pop.St[PaiMae[1]] )/2;
+  }
 }

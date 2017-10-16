@@ -50,6 +50,7 @@ CLASSIFICADOR
 - Resolver como garantir que a leitura da media do sensor de distancias esta estavel antes de utiliza-la no AG
 - Funcao AplicaRegra que atualiza as posicoes dos servo-motores de acordo com a regra vencedora do leilao
   e mede a variacao da distancia para aplicar recompensa
+- Maquina de estados de sistema classificador funcionando. Testa as regras e cobra as taxas
   
 SERVO
 - Codigo adequado para 4 servo motores

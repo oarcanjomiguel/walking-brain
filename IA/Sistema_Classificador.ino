@@ -473,7 +473,9 @@ void TrataSistemaClassificador(void)
           Serial.print(": ");
           Serial.print(Leilao.DistanciaInicial,DEC);
           Serial.print(" - ");
-          Serial.println(Leilao.DistanciaFinal,DEC);
+          Serial.print(Leilao.DistanciaFinal,DEC);
+          Serial.print(" / Recompensa: ");
+          Serial.println(Leilao.Recompensa,DEC);
         }
         EstadoSistemaClassificador = ESTADOSC_ESTABILIZA;
       }
@@ -491,7 +493,19 @@ void TrataSistemaClassificador(void)
 
     case ESTADOSC_MUTACAO:
       Mutacao(TAXA_MUTACAO);
-      EstadoSistemaClassificador = ESTADOSC_AGUARDA;
+      EstadoSistemaClassificador = ESTADOSC_SUBSTITUI;
+    break;
+
+    case ESTADOSC_SUBSTITUI:
+      //insere os filhos gerados por crossover na populacao principal
+      InsereCrossover();
+      //incrementa o contador de geracoes
+      Pop.Geracao++;
+      //inicializa uma nova sequencia de iteracoes
+      Pop.Iteracao = 0;
+      //condicao de parada
+      if(Pop.Geracao >= 3) { EstadoSistemaClassificador = ESTADOSC_AGUARDA; }
+      else { EstadoSistemaClassificador = ESTADOSC_INICIALIZA; }
     break;
   }
 }
