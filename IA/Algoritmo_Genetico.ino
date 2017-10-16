@@ -19,6 +19,7 @@ void Crossover(unsigned char ind[2])
   //unsigned char casal_temporario[2][ANTECEDENTE+CONSEQUENTE];
   unsigned char i,j;
   //tamanho_cromossomo  = sizeof(individuos_crossover[0]);
+  
   tamanho_cromossomo  = ANTECEDENTE+CONSEQUENTE;
   ponto_crossover = random(tamanho_cromossomo-1);
   
@@ -73,6 +74,8 @@ void Crossover(unsigned char ind[2])
         }
         Serial.println("");
       }
+      Serial.print("Populacao total de filhotes: ");
+      Serial.println(PopAG.QuantidadeIndividuos,DEC);
     } //if(DebugAG == 1)
     PopAG.QuantidadeIndividuos++;
     PopAG.QuantidadeIndividuos++;
@@ -91,9 +94,94 @@ void Mutacao(float taxa)
 {
   unsigned int quantidade_genes_mutados;
   unsigned int i;
+  unsigned int quantidade_genes;
 
-  quantidade_genes_mutados = taxa * ( Pop.QuantidadeIndividuos * (ANTECEDENTE + CONSEQUENTE) );
-  Serial.print(quantidade_genes_mutados,DEC);
+  quantidade_genes = PopAG.QuantidadeIndividuos*(ANTECEDENTE+CONSEQUENTE);
+  quantidade_genes_mutados = taxa * quantidade_genes;
+  if(DebugAG == 1)
+  {
+    Serial.print("Quantidade de genes mutados: ");
+    Serial.println(quantidade_genes_mutados,DEC);
+  }
+  unsigned int genes_mutados[quantidade_genes_mutados];
 
+  Serial.print("Genes mutados: ");
+  for(i=0;i<quantidade_genes_mutados;i++)
+  {
+    genes_mutados[i] = random(quantidade_genes);
+    Serial.print(genes_mutados[i],DEC);
+    Serial.print(" ");
+  }
+  Serial.println("");
+}
+/*
+ * Funcao:  void OrdenaFitness(void)
+ * In:      void
+ * Out:     void
+ * Desc.:   Coloca em PaiMae[] os indices dos dois individuos de Pop com o maio fitness (energia)
+ *          e em Ancora[] os indices dos dois individuos de Pop com menor fitness que serao 
+ *          substituidos por filhotes de PaiMae[]
+ */
+void OrdenaFitness(void)
+{
+  //unsigned char pai[2] = {0 , 0};
+  unsigned int i,j;
+  //float aux_fitness;
+  //float fitness[Pop.QuantidadeIndividuos];
+  unsigned char indice[Pop.QuantidadeIndividuos];
+  unsigned char aux_indice;
   
+  PaiMae[0] = 0;
+  PaiMae[1] = 0;
+  for(i=0;i<CROSSOVER_MAX*2;i++) { Ancora[i] = 0; }
+
+  //ordena o vetor de indices por ordem de "chegada"
+  for(i=0;i<Pop.QuantidadeIndividuos;i++) indice[i] = i;
+  //ordena esse vetor de indices em ordem decrescente (maior valor na posicao 0)
+  for (i=0;i<Pop.QuantidadeIndividuos;i++)
+  {
+    for(j=i;j<Pop.QuantidadeIndividuos;j++)
+    {
+      if(Pop.St[indice[i]] < Pop.St[indice[j]])
+      {
+        aux_indice = indice[i];
+        indice[i] = indice[j];
+        indice[j] = aux_indice;
+      }
+    }
+  }
+  
+  if (DebugAG == 1)
+  {
+    Serial.print("Ordem de fitness: ");
+    for(i=0;i<Pop.QuantidadeIndividuos;i++)
+    {
+      Serial.print(indice[i],DEC);
+      Serial.print(" ");
+    }
+    Serial.println("");
+  }
+  //salva os melhores no vetor PaiMae[]
+  if(DebugAG == 1) Serial.print("Indices salvos para crossover: ");
+  for(i=0;i<2;i++)
+  {
+    PaiMae[i] = indice[i];
+    if (DebugAG == 1)
+    {
+      Serial.print(PaiMae[i],DEC);
+      Serial.print(" ");
+    }
+  }
+  if(DebugAG == 1)
+  {
+    Serial.println("");
+    Serial.print("Individuos com os piores fitness: ");
+  }
+  //salva os piores no vetor Ancora[]
+  for(i=0;i<CROSSOVER_MAX*2;i++)
+  {
+    Ancora[i] = indice[Pop.QuantidadeIndividuos-1-i];
+    if(DebugAG == 1) Serial.print(Ancora[i],DEC);
+  }
+  if(DebugAG == 1) Serial.println("");
 }

@@ -48,6 +48,7 @@ void Estados()
           Serial.println("[c]: crossover dummy");
           Serial.println("[m]: mutacao dummy");
           Serial.println("[l]: Le Ambiente");
+          Serial.println("[s]: Roda Sistema Classificador");
           Serial.println("[axx]: Aplica regra xx");
           Serial.println("[z]: retorna ao menu principal");
         break;
@@ -142,8 +143,13 @@ void Estados()
         break;
         
         case 'l':
-          Serial.println(LeAmbiente(),DEC);
+          if(LeAmbiente()) {}
         break;
+
+        case 's':
+          EstadoSistemaClassificador = ESTADOSC_INICIALIZA;
+          Pop.Iteracao = 0;
+          //Pop.Geracao++;
         
         case 'z':
           Serial.println("Menu principal");

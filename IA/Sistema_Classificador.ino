@@ -17,19 +17,27 @@ void InicializaPopulacao(unsigned int tam)
       if(j<ANTECEDENTE)
       {
         Pop.Cromossomo[i][j] = random(ESTADOS_GENE+1);
-        if(Pop.Cromossomo[i][j] == 2) numdcare++;
+        if(Pop.Cromossomo[i][j] == ESTADOS_GENE) numdcare++;
       }
       //inicializa os consequentes (so podem ser 0 ou 1)
       else
       {
         Pop.Cromossomo[i][j] = random(ESTADOS_GENE);
       }
+      //numdcare=0;
     }
     //inicializa a energia inicial
     Pop.St[i] = ENERGIA_INICIAL;
     Pop.Spec[i] = (ANTECEDENTE - numdcare)*1.0/ANTECEDENTE;
+    //verifica se a regra eh generica demais e re-sorteia um gene aleatorio para aumentar a especificidade
+    if(Pop.Spec[i] == 0.0)
+    {
+      Pop.Cromossomo[i][random(ANTECEDENTE)] = random(ESTADOS_GENE);
+    }
     numdcare = 0;
   }
+  Pop.Geracao = 0;
+  Pop.Iteracao = 0;
 }
 
 void ImprimePopulacao(unsigned int tam)
@@ -56,6 +64,8 @@ void ImprimePopulacao(unsigned int tam)
     //pula a linha ao terminar de imprimir cada individuo
     Serial.println(" ");
   }
+  Serial.print("Geracao: ");
+  Serial.println(Pop.Geracao,DEC);
 }
 /*
  * Funcao:  BuscaRegras(unsigned char ambiente[ANTECEDENTE])
@@ -164,19 +174,30 @@ unsigned char BuscaVencedor(unsigned int quant)
 /*
  * Funcao:  float MedeRecompensa(void)
  * In:      void
- * Out:     valor de recompensa pela aplicacao da regra
- * Desc.:   Apos a atualizacao do posicionamento dos servo motores, retorna a
- *          recompensa dependendo se o robo andou para frente ou ficou parado / andou para tras
+ * Out:     void
+ * Desc.:   Apos a atualizacao do posicionamento dos servo motores, salva a
+ *          recompensa em Leilao.Recompensa dependendo se o robo andou para frente ou ficou parado / andou para tras
  */
-float MedeRecompensa(void)
+void MedeRecompensa(void)
 {
-  float recompensa;
+  float recompensa = RECOMPENSA_SUPRESSAO;
 
   if(Leilao.DistanciaInicial > Leilao.DistanciaFinal) 
   {
-    
+    recompensa = RECOMPENSA_REFORCO;
   }
-  return(0.0);
+  Leilao.Recompensa = recompensa;
+}
+/*
+ * Funcao:  void AplicaRecompensa(void)
+ * In:      void
+ * Out:     void
+ * Desc.:   Atualiza o valor da energia da regra vencedora com a recompensa 
+ *          determinada pela aplicacao da mesma 
+ */
+void AplicaRecompensa(void)
+{
+  Pop.St[Leilao.Vencedor] = Pop.St[Leilao.Vencedor] + Leilao.Recompensa;
 }
 
 /*
@@ -204,7 +225,7 @@ void AplicaRegra(unsigned int ind)
   else
   {
     recompensa_dummy = 1.0 * random(2);
-    if(recompensa_dummy == 0.0) recompensa_dummy = -2.0;
+    if(recompensa_dummy == 0.0) recompensa_dummy = RECOMPENSA_SUPRESSAO;
     Leilao.Recompensa = recompensa_dummy;
   }
 }
@@ -250,7 +271,16 @@ void CobraTaxas(void)
     }
     
     //Pop.St[Leilao.RegrasAplicaveis[i]] = (1.0 - Taxa_v) * Pop.St[Leilao.RegrasAplicaveis[i]] + rt - bidt - taxa_participacao;
-    Pop.St[Leilao.RegrasAplicaveis[i]] = Pop.St[Leilao.RegrasAplicaveis[i]] + rt - bidt - taxa_participacao;
+    Pop.St[Leilao.RegrasAplicaveis[i]] = Pop.St[Leilao.RegrasAplicaveis[i]] - bidt - taxa_participacao;
+    if(rt < 0.0)
+    {
+      if(Pop.St[Leilao.RegrasAplicaveis[i]] > rt) { Pop.St[Leilao.RegrasAplicaveis[i]] = Pop.St[Leilao.RegrasAplicaveis[i]] + rt; }
+      else { Pop.St[Leilao.RegrasAplicaveis[i]] = 0.0; }
+    }
+    else
+    {
+      Pop.St[Leilao.RegrasAplicaveis[i]] = Pop.St[Leilao.RegrasAplicaveis[i]] + rt;
+    }
     
     //Debug serial do calculo da nova St
     if(DebugSC == 1)
@@ -271,6 +301,13 @@ void CobraTaxas(void)
   }
   
 }
+/*
+ * Funcao:  void ExecutaLeilao(void)
+ * In:      void
+ * Out:     void
+ * Desc.:   Descobre quais regras tem antecedentes que se encaixam em MensagemAmbiente[] e lista essas regras em Leilao.RegrasAplicaveis
+ *          Calcula bidt e ebidt e define quem ganha o leilao. Salva o indice do vencedor em Leilao.Vencedor
+ */
 void ExecutaLeilao(void)
 {
   unsigned int i;
@@ -315,24 +352,33 @@ void ExecutaLeilao(void)
  */
 char LeAmbiente(void)
 {
-  
   unsigned char i,j,achou;
   unsigned char posic[SERVO_MAX];
   for(i=0;i<SERVO_MAX;i++)
   {
+    MensagemAmbiente[i] = DONT_CARE_SYMBOL;
     posic[i] = Servos[i].read();
-    achou=0;
+    //achou=0;
     for(j=1;j<=ANGULOS_SERVO;j++)
     {
       if(posic[i]==AnguloServo[j]) 
       {
-        achou = j;
-        Serial.print("Angulo encontrado: ");
-        Serial.println(AnguloServo[achou],DEC);
+        //achou = j;
+        MensagemAmbiente[i] = j-1; //salva o equivalente da Tabela Verdade da posicao do servo
+        if(DebugSC==1)
+        {
+          Serial.print("Angulo encontrado: ");
+          Serial.println(AnguloServo[j],DEC);
+        }
       }
     }
   }
-   
+  achou=1;
+  for(i=0;i<SERVO_MAX;i++)
+  {
+    if(MensagemAmbiente[i]==DONT_CARE_SYMBOL) achou=0;
+  }
+  return(achou);
 }
 
 /*
@@ -346,6 +392,7 @@ char LeAmbiente(void)
 void TrataSistemaClassificador(void)
 {
   unsigned int i;
+  //if(EstadoSistemaClassificador !=0 ) Serial.println(EstadoSistemaClassificador,DEC);
   switch(EstadoSistemaClassificador)
   {
     case ESTADOSC_AGUARDA:
@@ -353,9 +400,11 @@ void TrataSistemaClassificador(void)
     break;
 
     case ESTADOSC_INICIALIZA:
-      InicializaPopulacao(Pop.QuantidadeIndividuos);
+      //soh inicializa a populacao se nunca tiver rodado o algoritmo
+      //if(Pop.Geracao == 0) InicializaPopulacao(Pop.QuantidadeIndividuos);
       //Aleatoriza as posicoes iniciais dos servomotores
       Estado_Servo = 3;
+      
       for(i=0;i<SERVO_MAX;i++)
       {
         PosicionaServos(i,random(ESTADOS_GENE));
@@ -369,14 +418,81 @@ void TrataSistemaClassificador(void)
       {
         if(SensorEstavel()==1)
         {
-          
-          Leilao.DistanciaInicial = media;
-          ExecutaLeilao();
-          AplicaRegra(Leilao.Vencedor); 
+          EstadoSistemaClassificador = ESTADOSC_MEDE_ANTES;
+          if (LeAmbiente()==0) { Serial.println("erro ao ler mensagem do ambiente"); }
         }
       }
     break;
-    
+
+    case ESTADOSC_MEDE_ANTES:
+      if(FEEDBACK_ATIVO == 1) { Leilao.DistanciaInicial = media; }
+      EstadoSistemaClassificador = ESTADOSC_APLICA_REGRA;
+    break;
+
+    case ESTADOSC_APLICA_REGRA:
+      ExecutaLeilao();
+      AplicaRegra(Leilao.Vencedor);
+      servoPronto = 0;
+      EstadoSistemaClassificador = ESTADOSC_MEDE_DEPOIS;
+    break;
+
+    case ESTADOSC_MEDE_DEPOIS:
+      if(servoPronto==1)
+      {
+        if(SensorEstavel()==1)
+        {
+          if(FEEDBACK_ATIVO) { Leilao.DistanciaFinal = media; }
+          if (LeAmbiente()==0) { Serial.println("erro ao ler mensagem do ambiente"); }
+          EstadoSistemaClassificador = ESTADOSC_COBRA_TAXAS;
+        }
+      }
+    break;
+
+    case ESTADOSC_COBRA_TAXAS:
+      MedeRecompensa();
+      CobraTaxas();
+      EstadoSistemaClassificador = ESTADOSC_RECOMPENSA;
+    break;
+
+    case ESTADOSC_RECOMPENSA:
+      //MedeRecompensa();
+      //AplicaRecompensa();
+      if(Pop.Iteracao >= ITERACOES_MEIA_VIDA) //se chegou na 100a iteracao, roda o Algoritmo Genetico
+      {
+        EstadoSistemaClassificador = ESTADOSC_CROSSOVER;
+        ImprimePopulacao(Pop.QuantidadeIndividuos);
+        OrdenaFitness();
+      }
+      else
+      {
+        Pop.Iteracao++;
+        if(DebugSC == 1)
+        {
+          Serial.print("Iteracao ");
+          Serial.print(Pop.Iteracao,DEC);
+          Serial.print(": ");
+          Serial.print(Leilao.DistanciaInicial,DEC);
+          Serial.print(" - ");
+          Serial.println(Leilao.DistanciaFinal,DEC);
+        }
+        EstadoSistemaClassificador = ESTADOSC_ESTABILIZA;
+      }
+    break;
+
+    case ESTADOSC_CROSSOVER:
+      PopAG.QuantidadeIndividuos=0; //inicia a populacao que sera cruzada e mutada
+      for(i=0; i < CROSSOVER_MAX; i++)
+      {
+        Crossover(PaiMae);
+      }
+      EstadoSistemaClassificador = ESTADOSC_MUTACAO;
+      //EstadoSistemaClassificador = ESTADOSC_MUTACAO;
+    break;
+
+    case ESTADOSC_MUTACAO:
+      Mutacao(TAXA_MUTACAO);
+      EstadoSistemaClassificador = ESTADOSC_AGUARDA;
+    break;
   }
 }
 

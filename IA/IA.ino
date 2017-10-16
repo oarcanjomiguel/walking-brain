@@ -10,7 +10,7 @@
  * ////////////////////////    DEFINICOES    ///////////////////////////////////////
  * /////////////////////////////////////////////////////////////////////////////////
  */
-///////////////////////////////////////////////////////servo///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////SERVO///////////////////////////////////////////////////////
 #define PINO_SERVO 9 // pino do servo motor
 #define PINO_SERVO1 2
 #define PINO_SERVO2 3
@@ -25,7 +25,7 @@ const int SERVO_ANGULO2 = 110;
 #define SERVO_MAX 4
 #define DELTA_SERVO 1
 
-///////////////////////////////////////////////////////sensor///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////SENSOR///////////////////////////////////////////////////////
 #define trigPin 13            // pino de trigger do sensor
 #define echoPin 12            // pino de echo para calculo da distancia
 #define TAMANHO_BUFFER 10     // tamanho do buffer de historico do sensor
@@ -35,7 +35,7 @@ const int SERVO_ANGULO2 = 110;
 #define DELTA_SENSOR 2        // margem de erro para cima e para baixo dos valores do buffer de distancias (garantia da
                               // estabilidade do valor
                               
-///////////////////////////////////////////////////////Maquina de estados///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////MAQUINA DE ESTADOS///////////////////////////////////////////////////////
 #define ESTADO_MENU 0
 #define ESTADO_SERVO_MANUAL 1
 #define ESTADO_SERVO_AUTOMATICO 2
@@ -66,19 +66,27 @@ const int SERVO_ANGULO2 = 110;
 #define FEEDBACK_ATIVO 1
 //taxa de proporcionalidade do Bidt a ser cobrada de todos os participantes do leilao
 #define BID_TAX 0.0030
+//recompensa em caso de sucesso da regra
+#define RECOMPENSA_REFORCO 2.0
+//recompensa em caso de falha da regra
+#define RECOMPENSA_SUPRESSAO -2.0
 
 #define ESTADOSC_AGUARDA 0
 #define ESTADOSC_INICIALIZA 1
 #define ESTADOSC_ESTABILIZA 2
 #define ESTADOSC_MEDE_ANTES 3
-#define ESTADOSC_APLICA 4
+#define ESTADOSC_APLICA_REGRA 4
 #define ESTADOSC_MEDE_DEPOIS 5
-#define COBRA_TAXAS 6
+#define ESTADOSC_COBRA_TAXAS 6
+#define ESTADOSC_RECOMPENSA 7
+#define ESTADOSC_CROSSOVER 8
+#define ESTADOSC_MUTACAO 9
+#define ESTADOSC_SUBSTITUI 10
 
 ///////////////////////////////////////////////////////ALGORITMO GENETICO///////////////////////////////////////////////////////
 #define TAXA_MUTACAO 0.1
 #define POPULACAO_AG_MAX 10
-//
+#define CROSSOVER_MAX 2 //quantidade de duplas de filhos que serao criados em cada sessao de crossover (padrao:1, ou seja, dois filhos)
 
 /* /////////////////////////////////////////////////////////////////////////////////
  * /////////////////////// VARIAVEIS GLOBAIS ///////////////////////////////////////
@@ -97,7 +105,7 @@ unsigned long decSegSinal = 0;      //variavel para guardar o tempo do sinal
 int segundo = 0;                    //tempo do segundos do relogio
 int minuto = 0;                     //tempo do minuto do relogio
 
-///////////////////////////////////////////////////////servo///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////SERVO///////////////////////////////////////////////////////
 int pos = 0;  //posicao do servo de 0 a 180
 unsigned char posicaoServosAlvo[SERVO_MAX];     //posicao alvo(final desejada) de cada servo motor
 unsigned char posicaoServosAtual[SERVO_MAX];   //posicao atual dos servos (vai seguindo gradualmente a PosicaoServosAlvo[x])
@@ -115,13 +123,13 @@ Servo Servos[SERVO_MAX];
 //Servo Servo3;
 //Servo Servo4;
 
-///////////////////////////////////////////////////////sensor///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////SENSOR///////////////////////////////////////////////////////
 long Historico[TAMANHO_BUFFER];
 unsigned char PosHistorico;
 float media;
 unsigned int decSegSensor=0;
 unsigned int pDecSegSensor = DECSEG_SENSOR;
-////////////////////////////////////////////////Maquina de estados//////////////////////////////////////////////////
+////////////////////////////////////////////////MAQUINA DE ESTADOS//////////////////////////////////////////////////
 unsigned char Estado;
 unsigned char PosGeneBusca;
 
@@ -134,6 +142,8 @@ struct Populacao
   unsigned char Cromossomo[POPULACAO_MAX][ANTECEDENTE + CONSEQUENTE];
   float         St[POPULACAO_MAX];
   float         Spec[POPULACAO_MAX];
+  unsigned char Iteracao;
+  unsigned int  Geracao;
 };
 struct LeilaoGenetico
 {
@@ -162,6 +172,8 @@ struct PopulacaoAG
   unsigned char QuantidadeIndividuos=0;
   unsigned char Cromossomo[POPULACAO_AG_MAX][ANTECEDENTE+CONSEQUENTE];
 };
+unsigned char PaiMae[2]; //indice no vetor Pop dos dois individuos com maior energia pra fazer crossover
+unsigned char Ancora[CROSSOVER_MAX*2]; //indice no vetor Pop dos dois individuos com menor energia que serao substituidos
 
 ////////////////////////////////////////////////      DEBUGS      //////////////////////////////////////////////////
 unsigned char DebugAG = 0;
@@ -179,16 +191,13 @@ struct PopulacaoAG PopAG;
 void setup_servo()
 {
   unsigned char i;
-  //meuservo.attach(PINO_SERVO); //Inicializa o pino 9 como pwm para o servo motor
-  //Servo2.attach(PINO_SERVO2);
-  //Servo3.attach(PINO_SERVO3);
-  //Servo4.attach(PINO_SERVO4);
   for(i=0;i<SERVO_MAX;i++)
   {
     Servos[i].attach(PINO_SERVO1+i);
     posicaoServosAlvo[i] = SERVO_ANGULO0;
     posicaoServosAtual[i] = SERVO_ANGULO0;
   }
+  Estado_Servo = 0;
 }
 
 void setup_sensor()
@@ -204,16 +213,21 @@ void setup_sensor()
   }
 }
 
-void setup() {
+void setup_AG(void)
+{
+  //aleatoriza a semente da funcao random. Precisa de uma boa fonte de entropia long
+  //como a leitura de uma porta analogica desconectada
+  randomSeed(analogRead(0));
+  InicializaPopulacao(Pop.QuantidadeIndividuos);
+}
+
+void setup()
+{
   setup_servo();
   setup_sensor();
   Serial.begin (9600);
   Estado = 0;
-  Estado_Servo = 0;
-  //aleatoriza a semente da funcao random. Precisa de uma boa fonte de entropia long
-  //como a leitura de uma porta analogica desconectada
-  randomSeed(analogRead(0));
-  //Serial.print(sizeof(Pop.Cromossomo)/sizeof(Pop.Cromossomo[0]),DEC);
+  setup_AG();
 }
 
 
