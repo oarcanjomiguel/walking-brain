@@ -431,9 +431,18 @@ void TrataSistemaClassificador(void)
 
     case ESTADOSC_APLICA_REGRA:
       ExecutaLeilao();
-      AplicaRegra(Leilao.Vencedor);
-      servoPronto = 0;
-      EstadoSistemaClassificador = ESTADOSC_MEDE_DEPOIS;
+      //se nenhuma regra eh aplicavel nesse caso, aleatoriza as posicoes das patas e roda as iteracoes de novo
+      //se pelo menos uma regra eh aplicavel, continua iteracao
+      if(Leilao.QuantidadeParticipantes>0)
+      {
+        AplicaRegra(Leilao.Vencedor);
+        servoPronto = 0;
+        EstadoSistemaClassificador = ESTADOSC_MEDE_DEPOIS;
+      }
+      else
+      {
+        EstadoSistemaClassificador = ESTADOSC_INICIALIZA;
+      }
     break;
 
     case ESTADOSC_MEDE_DEPOIS:
@@ -477,7 +486,7 @@ void TrataSistemaClassificador(void)
           Serial.print(" / Recompensa: ");
           Serial.println(Leilao.Recompensa,DEC);
         }
-        EstadoSistemaClassificador = ESTADOSC_ESTABILIZA;
+        EstadoSistemaClassificador = ESTADOSC_INICIALIZA;
       }
     break;
 

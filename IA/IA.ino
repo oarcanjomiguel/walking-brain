@@ -34,7 +34,7 @@ const int SERVO_ANGULO2 = 110;
 #define DECSEG_SENSOR 1       // intervalo em decimos de segundo entre leituras do sensor
 #define DELTA_SENSOR 2        // margem de erro para cima e para baixo dos valores do buffer de distancias (garantia da
                               // estabilidade do valor
-                              
+#define DISTANCIA_MINIMA 4.0  //distancia de seguranca para reiniciar posicao do robo
 ///////////////////////////////////////////////////////MAQUINA DE ESTADOS///////////////////////////////////////////////////////
 #define ESTADO_MENU 0
 #define ESTADO_SERVO_MANUAL 1
@@ -55,8 +55,8 @@ const int SERVO_ANGULO2 = 110;
 #define K0 0.1
 #define K1 0.1
 #define K2 0.0833
-//#define SPOW 1
-#define SPOW 3
+#define SPOW 1
+//#define SPOW 3
 #define RAND_MAX 1000
 #define ITERACOES_MEIA_VIDA 100
 //Quantidade de estados possiveis para cada gene (sem considerar o don't care)
@@ -69,7 +69,8 @@ const int SERVO_ANGULO2 = 110;
 //recompensa em caso de sucesso da regra
 #define RECOMPENSA_REFORCO 2.0
 //recompensa em caso de falha da regra
-#define RECOMPENSA_SUPRESSAO -2.0
+//#define RECOMPENSA_SUPRESSAO -2.0
+#define RECOMPENSA_SUPRESSAO -1.0
 
 #define ESTADOSC_AGUARDA 0
 #define ESTADOSC_INICIALIZA 1
@@ -241,5 +242,5 @@ void loop()
   Estados();
   TrataSensor();
   TrataServo();
-  TrataSistemaClassificador();
+  if(Seguranca()==1) { TrataSistemaClassificador(); }
 }

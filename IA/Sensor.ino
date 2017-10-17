@@ -76,3 +76,9 @@ char SensorEstavel(void)
   return(estavel);
 }
 
+unsigned char Seguranca(void)
+{
+  if(media>DISTANCIA_MINIMA) { return(1); }
+  else { return(0); }
+}
+

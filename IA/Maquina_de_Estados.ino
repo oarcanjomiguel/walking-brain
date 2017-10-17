@@ -147,9 +147,11 @@ void Estados()
         break;
 
         case 's':
-          EstadoSistemaClassificador = ESTADOSC_INICIALIZA;
           Pop.Iteracao = 0;
-          //Pop.Geracao++;
+          Pop.Geracao = 0;
+          EstadoSistemaClassificador = ESTADOSC_INICIALIZA;
+          
+        break;
         
         case 'z':
           Serial.println("Menu principal");
