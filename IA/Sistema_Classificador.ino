@@ -466,27 +466,32 @@ void TrataSistemaClassificador(void)
     case ESTADOSC_RECOMPENSA:
       //MedeRecompensa();
       //AplicaRecompensa();
-      if(Pop.Iteracao >= ITERACOES_MEIA_VIDA) //se chegou na 100a iteracao, roda o Algoritmo Genetico
+      if(Seguranca()==1)
       {
-        EstadoSistemaClassificador = ESTADOSC_CROSSOVER;
-        ImprimePopulacao(Pop.QuantidadeIndividuos);
-        OrdenaFitness();
-      }
-      else
-      {
-        Pop.Iteracao++;
-        if(DebugSC == 1)
+        if(Pop.Iteracao >= ITERACOES_MEIA_VIDA/10) //se chegou na 100a iteracao, roda o Algoritmo Genetico
         {
-          Serial.print("Iteracao ");
-          Serial.print(Pop.Iteracao,DEC);
-          Serial.print(": ");
-          Serial.print(Leilao.DistanciaInicial,DEC);
-          Serial.print(" - ");
-          Serial.print(Leilao.DistanciaFinal,DEC);
-          Serial.print(" / Recompensa: ");
-          Serial.println(Leilao.Recompensa,DEC);
+          EstadoSistemaClassificador = ESTADOSC_CROSSOVER;
+          ImprimePopulacao(Pop.QuantidadeIndividuos);
+          OrdenaFitness();
         }
-        EstadoSistemaClassificador = ESTADOSC_INICIALIZA;
+        else
+        {
+          Pop.Iteracao++;
+          if(DebugSC == 1)
+          {
+            Serial.print("Iteracao ");
+            Serial.print(Pop.Iteracao,DEC);
+            Serial.print(": ");
+            Serial.print(Leilao.DistanciaInicial,DEC);
+            Serial.print(" - ");
+            Serial.print(Leilao.DistanciaFinal,DEC);
+            Serial.print(" / Recompensa: ");
+            Serial.println(Leilao.Recompensa,DEC);
+          }
+          //EstadoSistemaClassificador = ESTADOSC_INICIALIZA;
+          EstadoSistemaClassificador = ESTADOSC_ESTABILIZA;
+          
+        }
       }
     break;
 
@@ -515,6 +520,7 @@ void TrataSistemaClassificador(void)
       //condicao de parada
       if(Pop.Geracao >= 3) { EstadoSistemaClassificador = ESTADOSC_AGUARDA; }
       else { EstadoSistemaClassificador = ESTADOSC_INICIALIZA; }
+      //else { EstadoSistemaClassificador = ESTADOSC_ESTABILIZA; }
     break;
   }
 }

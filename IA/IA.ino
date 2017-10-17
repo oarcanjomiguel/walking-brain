@@ -30,11 +30,11 @@ const int SERVO_ANGULO2 = 110;
 #define echoPin 12            // pino de echo para calculo da distancia
 #define TAMANHO_BUFFER 10     // tamanho do buffer de historico do sensor
 #define MAX_DISTANCIA_CM 200
-#define MIN_DISTANCIA_CM 0
+#define MIN_DISTANCIA_CM 1
 #define DECSEG_SENSOR 1       // intervalo em decimos de segundo entre leituras do sensor
 #define DELTA_SENSOR 2        // margem de erro para cima e para baixo dos valores do buffer de distancias (garantia da
                               // estabilidade do valor
-#define DISTANCIA_MINIMA 4.0  //distancia de seguranca para reiniciar posicao do robo
+#define DISTANCIA_MINIMA 5.0  //distancia de seguranca para reiniciar posicao do robo
 ///////////////////////////////////////////////////////MAQUINA DE ESTADOS///////////////////////////////////////////////////////
 #define ESTADO_MENU 0
 #define ESTADO_SERVO_MANUAL 1
@@ -48,29 +48,31 @@ const int SERVO_ANGULO2 = 110;
 
 ///////////////////////////////////////////////////////SISTEMA CLASSIFICADOR///////////////////////////////////////////////////////
 #define POPULACAO_MAX 100
-#define POPULACAO_DEFAULT 20
+#define POPULACAO_DEFAULT 30 //padrao: 20
 #define ANTECEDENTE 4
 #define CONSEQUENTE 4
-#define ENERGIA_INICIAL 200.0
+#define ENERGIA_INICIAL 100.0
 #define K0 0.1
 #define K1 0.1
 #define K2 0.0833
-#define SPOW 1
-//#define SPOW 3
+//#define SPOW 3 //padrao
+#define SPOW 3
 #define RAND_MAX 1000
-#define ITERACOES_MEIA_VIDA 100
+//#define ITERACOES_MEIA_VIDA 100
+#define ITERACOES_MEIA_VIDA 1000
 //Quantidade de estados possiveis para cada gene (sem considerar o don't care)
 #define ESTADOS_GENE 2
 #define DONT_CARE_SYMBOL ESTADOS_GENE
 //1-servomotores conectados X 0-servomotores desconectados (gera recompensa aleatoria)
 #define FEEDBACK_ATIVO 1
 //taxa de proporcionalidade do Bidt a ser cobrada de todos os participantes do leilao
-#define BID_TAX 0.0030
+//#define BID_TAX 0.0030 //padrao
+#define BID_TAX 0.0010
 //recompensa em caso de sucesso da regra
-#define RECOMPENSA_REFORCO 2.0
+#define RECOMPENSA_REFORCO 3.0 //padrao: 1.0
 //recompensa em caso de falha da regra
-//#define RECOMPENSA_SUPRESSAO -2.0
-#define RECOMPENSA_SUPRESSAO -1.0
+//#define RECOMPENSA_SUPRESSAO -2.0 //padrao
+#define RECOMPENSA_SUPRESSAO -2.0
 
 #define ESTADOSC_AGUARDA 0
 #define ESTADOSC_INICIALIZA 1
@@ -242,5 +244,5 @@ void loop()
   Estados();
   TrataSensor();
   TrataServo();
-  if(Seguranca()==1) { TrataSistemaClassificador(); }
+  TrataSistemaClassificador();
 }
