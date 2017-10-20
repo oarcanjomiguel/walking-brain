@@ -32,12 +32,7 @@ void Estados()
         break;
 
         case 'd':
-          for (i=0;i<TAMANHO_BUFFER;i++)
-          {
-            Serial.print(Historico[i]);
-            Serial.print(" ");
-          }
-          Serial.println(" ");
+          ImprimeDistancias();
         break;
 
         case 'i':

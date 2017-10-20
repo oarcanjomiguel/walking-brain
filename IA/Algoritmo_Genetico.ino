@@ -106,10 +106,10 @@ void Mutacao(float taxa)
     Serial.println(quantidade_genes_mutados,DEC);
   }
   
-  unsigned int genes_mutados[quantidade_genes_mutados];       //indice dentro do individuo do gene a ser mutado
+  unsigned char genes_mutados[quantidade_genes_mutados];       //indice dentro do individuo do gene a ser mutado
   unsigned char individuos_mutados[quantidade_genes_mutados]; //indice do individuo dentro do vetor PopAG que tera um gene mutado
   unsigned char gene_novo[quantidade_genes_mutados];          //novo valor do gene mutado
-  
+  unsigned char gene_original[quantidade_genes_mutados];
   if(DebugAG==1) Serial.print("Genes mutados: ");
   for(i=0;i<quantidade_genes_mutados;i++)
   {
@@ -124,8 +124,9 @@ void Mutacao(float taxa)
     }
     //muta os genes
     gene_novo[i] = PopAG.Cromossomo[individuos_mutados[i]][genes_mutados[i]];
+    gene_original[i] = gene_novo[i];
     tentativas = 0;
-    while((gene_novo[i] == PopAG.Cromossomo[individuos_mutados[i]][genes_mutados[i]])&&(tentativas<100))
+    while((gene_novo[i] == gene_original[i])&&(tentativas<100))
     {
       //caso tem don't care
       if(genes_mutados[i]<ANTECEDENTE) 
@@ -234,6 +235,13 @@ void InsereCrossover(void)
       Pop.Cromossomo[Ancora[i]][j] = PopAG.Cromossomo[i][j];
       //conta o numero de don't care symbols para calculo do Spec
       if(PopAG.Cromossomo[i][j] == ESTADOS_GENE) numdcare++;
+    }
+    //verifica se a regra eh generica demais
+    if(numdcare >= ANTECEDENTE) 
+    { 
+      //aleatoriza um gene aleatorio do antecedente entre os estados excluindo o don't care
+      Pop.Cromossomo[i][random(ANTECEDENTE)] = random(ESTADOS_GENE);
+      numdcare--;
     }
     Pop.Spec[Ancora[i]] = (ANTECEDENTE - numdcare)*1.0/ANTECEDENTE;
     Pop.St[Ancora[i]] = ( Pop.St[PaiMae[0]] + Pop.St[PaiMae[1]] )/2;

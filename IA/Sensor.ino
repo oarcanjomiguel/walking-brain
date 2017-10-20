@@ -82,3 +82,14 @@ unsigned char Seguranca(void)
   else { return(0); }
 }
 
+void ImprimeDistancias(void)
+{
+  unsigned char i;
+  for(i=0;i<TAMANHO_BUFFER;i++)
+  {
+    Serial.print(Historico[i],DEC);
+    Serial.print(" ");
+  }
+  Serial.println(media,DEC);
+}
+

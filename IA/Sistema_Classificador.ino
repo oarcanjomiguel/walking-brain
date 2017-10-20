@@ -468,7 +468,7 @@ void TrataSistemaClassificador(void)
       //AplicaRecompensa();
       if(Seguranca()==1)
       {
-        if(Pop.Iteracao >= ITERACOES_MEIA_VIDA/10) //se chegou na 100a iteracao, roda o Algoritmo Genetico
+        if(Pop.Iteracao >= ITERACOES_MEIA_VIDA/5) //se chegou na 100a iteracao, roda o Algoritmo Genetico
         {
           EstadoSistemaClassificador = ESTADOSC_CROSSOVER;
           ImprimePopulacao(Pop.QuantidadeIndividuos);
@@ -518,7 +518,7 @@ void TrataSistemaClassificador(void)
       //inicializa uma nova sequencia de iteracoes
       Pop.Iteracao = 0;
       //condicao de parada
-      if(Pop.Geracao >= 3) { EstadoSistemaClassificador = ESTADOSC_AGUARDA; }
+      if(Pop.Geracao >= GERACAO_MAX) { EstadoSistemaClassificador = ESTADOSC_AGUARDA; }
       else { EstadoSistemaClassificador = ESTADOSC_INICIALIZA; }
       //else { EstadoSistemaClassificador = ESTADOSC_ESTABILIZA; }
     break;

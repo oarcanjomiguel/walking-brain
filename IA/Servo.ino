@@ -15,15 +15,15 @@
         {
           if(posicaoServosAlvo[i] > posicaoServosAtual[i])
           {
-            posicaoServosAtual[i] = posicaoServosAtual[i] + DELTA_SERVO;
+            if(posicaoServosAtual[i]+DELTA_SERVO <= posicaoServosAlvo[i]) { posicaoServosAtual[i] = posicaoServosAtual[i] + DELTA_SERVO; }
+            else { posicaoServosAtual[i]++; }
             Servos[i].write(posicaoServosAtual[i]);
-            //Serial.print("+");
           }
           else if(posicaoServosAlvo[i] < posicaoServosAtual[i])
           {
-            posicaoServosAtual[i] = posicaoServosAtual[i] - DELTA_SERVO;
+            if(posicaoServosAtual[i] >= posicaoServosAlvo[i] + DELTA_SERVO ) { posicaoServosAtual[i] = posicaoServosAtual[i] - DELTA_SERVO; }
+            else { posicaoServosAtual[i]--; }
             Servos[i].write(posicaoServosAtual[i]);
-            //Serial.print("-");
           }
         }
         
@@ -36,6 +36,26 @@
       case 3: //modo com posicoes distintas nos 4 servos
               //obs: os valores de Posicao_Servos[] sao chars, para converter para int subtrair 48
         servoPronto=1;      
+        /*
+        for(i=0;i<SERVO_MAX;i++)
+        {
+          if(posicaoServosAlvo[i] > posicaoServosAtual[i])
+          {
+            servoPronto=0;
+            if(posicaoServosAtual[i]+DELTA_SERVO <= posicaoServosAlvo[i]) { posicaoServosAtual[i] = posicaoServosAtual[i] + DELTA_SERVO; }
+            else { posicaoServosAtual[i]++; }
+            Servos[i].write(posicaoServosAtual[i]);
+          }
+          else if(posicaoServosAlvo[i] < posicaoServosAtual[i])
+          {
+            servoPronto=0;
+            if(posicaoServosAtual[i] >= posicaoServosAlvo[i] + DELTA_SERVO ) { posicaoServosAtual[i] = posicaoServosAtual[i] - DELTA_SERVO; }
+            else { posicaoServosAtual[i]--; }
+            Servos[i].write(posicaoServosAtual[i]);
+          }
+        }
+        */
+        
         for(i=0;i<SERVO_MAX;i++)
         {
           if(posicaoServosAlvo[i] > posicaoServosAtual[i])
@@ -52,8 +72,8 @@
             Servos[i].write(posicaoServosAtual[i]);
             //Serial.print("-");
           }
-          
         }
+        
       break;
       
     }

@@ -32,9 +32,9 @@ const int SERVO_ANGULO2 = 110;
 #define MAX_DISTANCIA_CM 200
 #define MIN_DISTANCIA_CM 1
 #define DECSEG_SENSOR 1       // intervalo em decimos de segundo entre leituras do sensor
-#define DELTA_SENSOR 2        // margem de erro para cima e para baixo dos valores do buffer de distancias (garantia da
-                              // estabilidade do valor
-#define DISTANCIA_MINIMA 5.0  //distancia de seguranca para reiniciar posicao do robo
+#define DELTA_SENSOR 1        // margem de erro para cima e para baixo dos valores do buffer de distancias (garantia da
+                              // estabilidade do valor. Padrao: 2
+#define DISTANCIA_MINIMA 8.0  //distancia de seguranca para reiniciar posicao do robo
 ///////////////////////////////////////////////////////MAQUINA DE ESTADOS///////////////////////////////////////////////////////
 #define ESTADO_MENU 0
 #define ESTADO_SERVO_MANUAL 1
@@ -59,7 +59,7 @@ const int SERVO_ANGULO2 = 110;
 #define SPOW 3
 #define RAND_MAX 1000
 //#define ITERACOES_MEIA_VIDA 100
-#define ITERACOES_MEIA_VIDA 1000
+#define ITERACOES_MEIA_VIDA 500
 //Quantidade de estados possiveis para cada gene (sem considerar o don't care)
 #define ESTADOS_GENE 2
 #define DONT_CARE_SYMBOL ESTADOS_GENE
@@ -87,10 +87,10 @@ const int SERVO_ANGULO2 = 110;
 #define ESTADOSC_SUBSTITUI 10
 
 ///////////////////////////////////////////////////////ALGORITMO GENETICO///////////////////////////////////////////////////////
-#define TAXA_MUTACAO 0.1
+#define TAXA_MUTACAO 0.2
 #define POPULACAO_AG_MAX 10
 #define CROSSOVER_MAX 2 //quantidade de duplas de filhos que serao criados em cada sessao de crossover (padrao:1, ou seja, dois filhos)
-
+#define GERACAO_MAX 10 //padrao:3
 /* /////////////////////////////////////////////////////////////////////////////////
  * /////////////////////// VARIAVEIS GLOBAIS ///////////////////////////////////////
  * /////////////////////////////////////////////////////////////////////////////////
