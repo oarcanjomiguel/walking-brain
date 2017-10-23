@@ -239,3 +239,29 @@ void InsereCrossover(void)
     Pop.St[Ancora[i]] = ( Pop.St[PaiMae[0]] + Pop.St[PaiMae[1]] )/2;
   }
 }
+/*
+ * Funcao:  void ExecutaTorneio(unsigned int quant)
+ * In:      unsigned int quant: quantidade de individuos quye serao selecionados por torneio
+ * Out:     void
+ * Desc.:   Executa a selecao de "quant" individuos por torneio simples comparando a energia
+ */
+void ExecutaTorneio(unsigned int quant)
+{
+  unsigned char escolhidos[quant];
+  unsigned int i,j;
+  unsigned int tentativas;
+  unsigned char competidor[2];
+  
+  i=0;
+  while(i<quant)
+  {
+    competidor[0] = random(Pop.QuantidadeIndividuos);
+    //se ja tem escolhidos anteriores, verifica se o competidor ja esta na lista dos vencedores
+    if(i>0)
+    {
+      
+    }
+    i++;
+  }
+}
+

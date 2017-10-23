@@ -9,14 +9,13 @@ Serial: 9600
 
 //CONFIG
 - Fazer modulo de savar config e parametros na EEPROM
-- Fazer menu de config de parametros com opcao de verbose debug para cada modulo
-  - geracao de individuos, calculo dos lances, troca de geracoes, evolucao etc
 
 //SISTEMA CLASSIFICADOR
 - Sistema que salva / carrega a populacao na memoria EEPROM para guardar boas populaoes para posteridade
 - Sistema que permite inserir / exportar a populacao atraves de um comando serial
     - Um unico individuo a mais
     - A populacao inteira
+- Fazer substituicao por torneio
 
 //SERVO
 
@@ -24,18 +23,13 @@ Serial: 9600
 
 //DEBUG
 - Fazer funcao de traducao de erro de int para string (para traduzir o retorno das funcoes)
-- Fazer modulo do AG
-    - crossover
-    - mutacao
 - Fazer funcoes de metricas do AG
 - Ailmentacao e ativacao de cada servo independente
     - usar pinos de I/O para ligar cada servo de modo independente (VCC)
     
 AG
-- Crossover com indicacao de individuos e ponto de mutacao aleatorio
-- Insercao de filhotes na populacao com substituicao de individuos com maior forca
-    - calcular St e Spec para cada individuo novo ao inseri-lo na populacao
-V0.1
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////V0.1
 GERAL
 - fazer rotina de timer
   - colocar soft change do servo
@@ -68,4 +62,16 @@ SERVO
 SENSOR
 - Funcao que salva media da distancia quando todos os valores do buffer de distancias estao dentro de +-delta
   de margem de erro (garantia da estabilidade das leituras)
+
+AG
+- Fazer modulo do AG
+    - crossover
+    - mutacao
+- Crossover com indicacao de individuos e ponto de mutacao aleatorio
+- Insercao de filhotes na populacao com substituicao de individuos com maior forca
+    - calcular St e Spec para cada individuo novo ao inseri-lo na populacao
+    
+DEBUG
+- Fazer menu de config de parametros com opcao de verbose debug para cada modulo
+  - geracao de individuos, calculo dos lances, troca de geracoes, evolucao etc
   */

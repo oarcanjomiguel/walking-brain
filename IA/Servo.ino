@@ -16,12 +16,14 @@
           if(posicaoServosAlvo[i] > posicaoServosAtual[i])
           {
             posicaoServosAtual[i] = posicaoServosAtual[i] + DELTA_SERVO;
+            if(posicaoServosAtual[i] == posicaoServosAlvo[i]+1) posicaoServosAtual[i]--;
             Servos[i].write(posicaoServosAtual[i]);
             //Serial.print("+");
           }
           else if(posicaoServosAlvo[i] < posicaoServosAtual[i])
           {
             posicaoServosAtual[i] = posicaoServosAtual[i] - DELTA_SERVO;
+            if(posicaoServosAtual[i] == posicaoServosAlvo[i]-1) posicaoServosAtual[i]++;
             Servos[i].write(posicaoServosAtual[i]);
             //Serial.print("-");
           }

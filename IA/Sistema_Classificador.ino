@@ -39,7 +39,13 @@ void InicializaPopulacao(unsigned int tam)
   Pop.Geracao = 0;
   Pop.Iteracao = 0;
 }
-
+/*
+ * Funcao:  void ImprimePopulacao(unsigned int tam)
+ * In:      void
+ * Out:     void
+ * Desc.:   Imprime popualacao de individuos atual pela Serial
+ *          
+ */
 void ImprimePopulacao(unsigned int tam)
 {
   unsigned int i,j;
@@ -65,7 +71,11 @@ void ImprimePopulacao(unsigned int tam)
     Serial.println(" ");
   }
   Serial.print("Geracao: ");
-  Serial.println(Pop.Geracao,DEC);
+  Serial.print(Pop.Geracao,DEC);
+  Serial.print(" ");
+  Serial.print(minuto,DEC);
+  Serial.print(":");
+  Serial.println(segundo,DEC);
 }
 /*
  * Funcao:  BuscaRegras(unsigned char ambiente[ANTECEDENTE])
