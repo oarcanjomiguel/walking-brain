@@ -23,7 +23,7 @@ const int SERVO_ANGULO1 = 70;
 const int SERVO_ANGULO2 = 110;
 //numero maximo de servos conectados ao hardware
 #define SERVO_MAX 4
-#define DELTA_SERVO 1
+#define DELTA_SERVO 2
 
 ///////////////////////////////////////////////////////SENSOR///////////////////////////////////////////////////////
 #define trigPin 13            // pino de trigger do sensor
@@ -32,9 +32,10 @@ const int SERVO_ANGULO2 = 110;
 #define MAX_DISTANCIA_CM 200
 #define MIN_DISTANCIA_CM 1
 #define DECSEG_SENSOR 1       // intervalo em decimos de segundo entre leituras do sensor
-#define DELTA_SENSOR 1        // margem de erro para cima e para baixo dos valores do buffer de distancias (garantia da
-                              // estabilidade do valor. Padrao: 2
-#define DISTANCIA_MINIMA 8.0  //distancia de seguranca para reiniciar posicao do robo
+#define DELTA_SENSOR 2        // margem de erro para cima e para baixo dos valores do buffer de distancias (garantia da
+                              // estabilidade do valor
+#define DISTANCIA_MINIMA 5.0  //distancia de seguranca para reiniciar posicao do robo
+
 ///////////////////////////////////////////////////////MAQUINA DE ESTADOS///////////////////////////////////////////////////////
 #define ESTADO_MENU 0
 #define ESTADO_SERVO_MANUAL 1
@@ -55,8 +56,8 @@ const int SERVO_ANGULO2 = 110;
 #define K0 0.1
 #define K1 0.1
 #define K2 0.0833
-//#define SPOW 3 //padrao
 #define SPOW 3
+//#define SPOW 3
 #define RAND_MAX 1000
 //#define ITERACOES_MEIA_VIDA 100
 #define ITERACOES_MEIA_VIDA 500
@@ -69,9 +70,9 @@ const int SERVO_ANGULO2 = 110;
 //#define BID_TAX 0.0030 //padrao
 #define BID_TAX 0.0010
 //recompensa em caso de sucesso da regra
-#define RECOMPENSA_REFORCO 3.0 //padrao: 1.0
+#define RECOMPENSA_REFORCO 4.0
 //recompensa em caso de falha da regra
-//#define RECOMPENSA_SUPRESSAO -2.0 //padrao
+//#define RECOMPENSA_SUPRESSAO -2.0
 #define RECOMPENSA_SUPRESSAO -2.0
 
 #define ESTADOSC_AGUARDA 0
@@ -87,7 +88,7 @@ const int SERVO_ANGULO2 = 110;
 #define ESTADOSC_SUBSTITUI 10
 
 ///////////////////////////////////////////////////////ALGORITMO GENETICO///////////////////////////////////////////////////////
-#define TAXA_MUTACAO 0.2
+#define TAXA_MUTACAO 0.3
 #define POPULACAO_AG_MAX 10
 #define CROSSOVER_MAX 2 //quantidade de duplas de filhos que serao criados em cada sessao de crossover (padrao:1, ou seja, dois filhos)
 #define GERACAO_MAX 10 //padrao:3
@@ -177,6 +178,7 @@ struct PopulacaoAG
 };
 unsigned char PaiMae[2]; //indice no vetor Pop dos dois individuos com maior energia pra fazer crossover
 unsigned char Ancora[CROSSOVER_MAX*2]; //indice no vetor Pop dos n individuos com menor energia que serao substituidos
+unsigned char vencedoresTorneio[POPULACAO_MAX]; //vetor com os indices dos individuos do vetor Pop que venceram o torneio
 
 ////////////////////////////////////////////////      DEBUGS      //////////////////////////////////////////////////
 unsigned char DebugAG = 0;
