@@ -15,19 +15,23 @@ Serial: 9600
 - Sistema que permite inserir / exportar a populacao atraves de um comando serial
     - Um unico individuo a mais
     - A populacao inteira
-- Fazer substituicao por torneio
 
 //SERVO
 
 //SENSOR
 
 //DEBUG
+- fazer debug multinivel
 - Fazer funcao de traducao de erro de int para string (para traduzir o retorno das funcoes)
 - Fazer funcoes de metricas do AG
 - Ailmentacao e ativacao de cada servo independente
     - usar pinos de I/O para ligar cada servo de modo independente (VCC)
     
 AG
+- Fazer selecao da populacao por torneio
+- Utilizar algum operador para evitar a alta quantidade de clones
+- Verificar a especificidade para evitar regras com Spec 0
+- Insercao de novos individuos ( InsereCrossover() ) pode ser feita por torneio ou elitismo (passar parametro)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////V0.1
 GERAL
@@ -58,11 +62,12 @@ SERVO
     - faz o calculo das possiveis posicoes de acordo com o numero de possibilidades do gene
     - testa se o servo esta habilitado
 - Mudar a escrita nos servos para ser suave e gradual. Utilizar as variaveis globais de timer
+- Servo aceita velocidade 1x ou 2x de acordo com o valor do #define DELTA_SERVO
 
 SENSOR
 - Funcao que salva media da distancia quando todos os valores do buffer de distancias estao dentro de +-delta
   de margem de erro (garantia da estabilidade das leituras)
-
+- Corrigido bug do sensor que sempre fazia a media ficar mais alta do que deveria. Faltava zerar a media antes de recalcula-la
 AG
 - Fazer modulo do AG
     - crossover

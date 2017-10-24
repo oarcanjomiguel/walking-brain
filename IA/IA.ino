@@ -93,6 +93,9 @@ const int SERVO_ANGULO2 = 110;
 #define CROSSOVER_MAX 2 //quantidade de duplas de filhos que serao criados em cada sessao de crossover (padrao:1, ou seja, dois filhos)
 #define GERACAO_MAX 10 //padrao:3
 #define QUANTIDADE_COMPETIDORES_TORNEIO 2 //padrao: 2
+
+#define INSERE_ELITISMO 0
+#define INSERE_TORNEIO 1
 /* /////////////////////////////////////////////////////////////////////////////////
  * /////////////////////// VARIAVEIS GLOBAIS ///////////////////////////////////////
  * /////////////////////////////////////////////////////////////////////////////////

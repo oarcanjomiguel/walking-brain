@@ -234,13 +234,13 @@ void InsereCrossover(void)
       //copia o cromossomo para a populacao no lugar dos piores individuos
       Pop.Cromossomo[Ancora[i]][j] = PopAG.Cromossomo[i][j];
       //conta o numero de don't care symbols para calculo do Spec
-      if(PopAG.Cromossomo[i][j] == ESTADOS_GENE) numdcare++;
+      if(PopAG.Cromossomo[Ancora[i]][j] == DONT_CARE_SYMBOL) numdcare++;
     }
     //verifica se a regra eh generica demais
-    if(numdcare >= ANTECEDENTE) 
+    if(numdcare >= ANTECEDENTE)
     { 
       //aleatoriza um gene aleatorio do antecedente entre os estados excluindo o don't care
-      Pop.Cromossomo[i][random(ANTECEDENTE)] = random(ESTADOS_GENE);
+      Pop.Cromossomo[Ancora[i]][random(ANTECEDENTE)] = random(ESTADOS_GENE);
       numdcare--;
     }
     Pop.Spec[Ancora[i]] = (ANTECEDENTE - numdcare)*1.0/ANTECEDENTE;
@@ -249,7 +249,7 @@ void InsereCrossover(void)
 }
 /*
  * Funcao:  void ExecutaTorneio(unsigned int quant)
- * In:      unsigned int quant: quantidade de individuos quye serao selecionados por torneio
+ * In:      unsigned int quant: quantidade de individuos que serao selecionados por torneio (campeoes)
  * Out:     void
  * Desc.:   Executa a selecao de "quant" individuos por torneio simples comparando a energia
  */
@@ -262,8 +262,7 @@ void ExecutaTorneio(unsigned int quant)
   unsigned char competidor[QUANTIDADE_COMPETIDORES_TORNEIO];
   unsigned char candidato,achou;
   
-  i=0;
-  while(i<quant)
+  for(i=0;i<quant;i++)
   {
     //preenche a chave dos competidores
     k=0;
@@ -277,15 +276,32 @@ void ExecutaTorneio(unsigned int quant)
         //usa a propria lista de escolhidos como lista tabu
         for(j=0;j<i;j++)
         {
+          if(candidato == escolhidos[j]) achou = 1;
+        }
+      }
+      //verifica se esse competidor ja esta nessa chave
+      if(k>0)
+      {
+        for(j=0;j<k;j++)
+        {
           if(candidato == competidor[j]) achou = 1;
         }
       }
-      //competidor[k] = 
-      k++;
+      //nao foi encontrado clone entre os campeoes nem na propria chave
+      if(achou == 0)
+      {
+        competidor[k] = candidato;
+        k++;
+      }
+      
     }
-
+    //faz a disputa de energias
+    escolhidos[i] = competidor[0];
+    for(j=0;j<QUANTIDADE_COMPETIDORES_TORNEIO;j++)
+    {
+      if(Pop.St[competidor[j]] > Pop.St[escolhidos[i]]) escolhidos[i] = competidor[j];
+    }
     
-    if (achou == 0) i++;
   }
 }
 
