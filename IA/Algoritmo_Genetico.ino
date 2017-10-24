@@ -129,7 +129,7 @@ void Mutacao(float taxa)
     while((gene_novo[i] == gene_original[i])&&(tentativas<100))
     {
       //caso tem don't care
-      if(genes_mutados[i]<ANTECEDENTE) 
+      if(genes_mutados[i]<ANTECEDENTE)
       {
         gene_novo[i] = random(ESTADOS_GENE+1);
       }
@@ -139,6 +139,8 @@ void Mutacao(float taxa)
       }
       tentativas++;
     }
+    //muda o gene na populacao PopAG
+    PopAG.Cromossomo[individuos_mutados[i]][genes_mutados[i]] = gene_novo[i];
   }
   if(DebugAG==1) Serial.println("");
 }

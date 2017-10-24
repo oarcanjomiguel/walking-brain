@@ -30,7 +30,7 @@ Serial: 9600
 AG
 - Fazer selecao da populacao por torneio
 - Utilizar algum operador para evitar a alta quantidade de clones
-- Verificar a especificidade para evitar regras com Spec 0
+
 - Insercao de novos individuos ( InsereCrossover() ) pode ser feita por torneio ou elitismo (passar parametro)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////V0.1
@@ -75,7 +75,9 @@ AG
 - Crossover com indicacao de individuos e ponto de mutacao aleatorio
 - Insercao de filhotes na populacao com substituicao de individuos com maior forca
     - calcular St e Spec para cada individuo novo ao inseri-lo na populacao
-    
+- Verificar a especificidade para evitar regras com Spec 0
+- Corrigido bug dos clones na funcao Mutacao. Nao estava inserindo a mutacao na populacao gerada (PopAG)
+
 DEBUG
 - Fazer menu de config de parametros com opcao de verbose debug para cada modulo
   - geracao de individuos, calculo dos lances, troca de geracoes, evolucao etc
