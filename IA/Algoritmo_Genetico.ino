@@ -256,20 +256,36 @@ void InsereCrossover(void)
 void ExecutaTorneio(unsigned int quant)
 {
   unsigned char escolhidos[quant];
-  unsigned int i,j;
-  unsigned int tentativas;
-  unsigned char competidor[2];
+  unsigned int i,j,k;
+  unsigned int tentativas_campeoes;
+  unsigned int tentativas_chave;
+  unsigned char competidor[QUANTIDADE_COMPETIDORES_TORNEIO];
+  unsigned char candidato,achou;
   
   i=0;
   while(i<quant)
   {
-    competidor[0] = random(Pop.QuantidadeIndividuos);
-    //se ja tem escolhidos anteriores, verifica se o competidor ja esta na lista dos vencedores
-    if(i>0)
+    //preenche a chave dos competidores
+    k=0;
+    while (k<QUANTIDADE_COMPETIDORES_TORNEIO)
     {
-      
+      candidato = random(Pop.QuantidadeIndividuos);
+      //se ja tem escolhidos anteriores, verifica se o competidor ja esta na lista dos vencedores
+      achou=0;
+      if(i>0)
+      {
+        //usa a propria lista de escolhidos como lista tabu
+        for(j=0;j<i;j++)
+        {
+          if(candidato == competidor[j]) achou = 1;
+        }
+      }
+      //competidor[k] = 
+      k++;
     }
-    i++;
+
+    
+    if (achou == 0) i++;
   }
 }
 

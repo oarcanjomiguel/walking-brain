@@ -402,7 +402,14 @@ char LeAmbiente(void)
 void TrataSistemaClassificador(void)
 {
   unsigned int i;
-  //if(EstadoSistemaClassificador !=0 ) Serial.println(EstadoSistemaClassificador,DEC);
+  if((EstadoSistemaClassificador !=0 )&&(DebugSC==1))
+  {
+    Serial.print(EstadoSistemaClassificador,DEC);
+    Serial.print(" ");
+    Serial.print(servoPronto,DEC);
+    Serial.print(" ");
+    Serial.println(SensorEstavel(),DEC);
+  }
   switch(EstadoSistemaClassificador)
   {
     case ESTADOSC_AGUARDA:
@@ -478,7 +485,7 @@ void TrataSistemaClassificador(void)
       //AplicaRecompensa();
       if(Seguranca()==1)
       {
-        if(Pop.Iteracao >= ITERACOES_MEIA_VIDA/5) //se chegou na 100a iteracao, roda o Algoritmo Genetico
+        if(Pop.Iteracao >= ITERACOES_MEIA_VIDA) //se chegou na 100a iteracao, roda o Algoritmo Genetico
         {
           EstadoSistemaClassificador = ESTADOSC_CROSSOVER;
           ImprimePopulacao(Pop.QuantidadeIndividuos);

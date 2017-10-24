@@ -41,16 +41,20 @@
           if(posicaoServosAlvo[i] > posicaoServosAtual[i])
           {
             servoPronto = 0;
-            posicaoServosAtual[i]++;
+            //posicaoServosAtual[i]++;
+            posicaoServosAtual[i] = posicaoServosAtual[i] + DELTA_SERVO;
+            if(posicaoServosAtual[i] == posicaoServosAlvo[i]+1) posicaoServosAtual[i]--;
             Servos[i].write(posicaoServosAtual[i]);
-            //Serial.print("+");
+            
           }
-          if(posicaoServosAlvo[i] < posicaoServosAtual[i])
+          else if(posicaoServosAlvo[i] < posicaoServosAtual[i])
           {
             servoPronto=0;
-            posicaoServosAtual[i]--;
+            //posicaoServosAtual[i]--;
+            posicaoServosAtual[i] = posicaoServosAtual[i] - DELTA_SERVO;
+            if(posicaoServosAtual[i] == posicaoServosAlvo[i]-1) posicaoServosAtual[i]++;
             Servos[i].write(posicaoServosAtual[i]);
-            //Serial.print("-");
+            
           }
         }
         

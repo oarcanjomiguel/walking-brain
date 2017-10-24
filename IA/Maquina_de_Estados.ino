@@ -22,6 +22,7 @@ void Estados()
           Serial.println("[d]: imprimir distancia");
           Serial.println("[i]: menu IA");
           Serial.println("[x]: menu debug");
+          Serial.println("[q]: reinicia todas as máquinas de estado");
         break;
 
         case 's':
@@ -53,6 +54,13 @@ void Estados()
           Serial.println("[a]: liga/desliga debug do AG");
           Serial.println("[s]: liga/desliga debug do Sistema Classificador");
           Serial.println("[z]: retorna ao menu principal");
+        break;
+
+        case 'q':
+          setup_servo();
+          setup_sensor();
+          Estado = 0;
+          Serial.println("Estados Reiniciados");
         break;
       }
     break;

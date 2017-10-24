@@ -42,6 +42,7 @@ void TrataSensor()
       PosHistorico++;
       if(PosHistorico >= TAMANHO_BUFFER) { PosHistorico = 0; }
       //calcula media do buffer
+      media=0;
       for (i=0;i<TAMANHO_BUFFER;i++)
       {
         media += Historico[i];

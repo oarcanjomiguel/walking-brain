@@ -49,7 +49,7 @@ const int SERVO_ANGULO2 = 110;
 
 ///////////////////////////////////////////////////////SISTEMA CLASSIFICADOR///////////////////////////////////////////////////////
 #define POPULACAO_MAX 100
-#define POPULACAO_DEFAULT 30 //padrao: 20
+#define POPULACAO_DEFAULT 20 //padrao: 20
 #define ANTECEDENTE 4
 #define CONSEQUENTE 4
 #define ENERGIA_INICIAL 100.0
@@ -60,7 +60,7 @@ const int SERVO_ANGULO2 = 110;
 //#define SPOW 3
 #define RAND_MAX 1000
 //#define ITERACOES_MEIA_VIDA 100
-#define ITERACOES_MEIA_VIDA 500
+#define ITERACOES_MEIA_VIDA 200
 //Quantidade de estados possiveis para cada gene (sem considerar o don't care)
 #define ESTADOS_GENE 2
 #define DONT_CARE_SYMBOL ESTADOS_GENE
@@ -68,12 +68,12 @@ const int SERVO_ANGULO2 = 110;
 #define FEEDBACK_ATIVO 1
 //taxa de proporcionalidade do Bidt a ser cobrada de todos os participantes do leilao
 //#define BID_TAX 0.0030 //padrao
-#define BID_TAX 0.0010
+#define BID_TAX 0.0030
 //recompensa em caso de sucesso da regra
 #define RECOMPENSA_REFORCO 4.0
 //recompensa em caso de falha da regra
 //#define RECOMPENSA_SUPRESSAO -2.0
-#define RECOMPENSA_SUPRESSAO -2.0
+#define RECOMPENSA_SUPRESSAO -3.0
 
 #define ESTADOSC_AGUARDA 0
 #define ESTADOSC_INICIALIZA 1
@@ -92,6 +92,7 @@ const int SERVO_ANGULO2 = 110;
 #define POPULACAO_AG_MAX 10
 #define CROSSOVER_MAX 2 //quantidade de duplas de filhos que serao criados em cada sessao de crossover (padrao:1, ou seja, dois filhos)
 #define GERACAO_MAX 10 //padrao:3
+#define QUANTIDADE_COMPETIDORES_TORNEIO 2 //padrao: 2
 /* /////////////////////////////////////////////////////////////////////////////////
  * /////////////////////// VARIAVEIS GLOBAIS ///////////////////////////////////////
  * /////////////////////////////////////////////////////////////////////////////////
