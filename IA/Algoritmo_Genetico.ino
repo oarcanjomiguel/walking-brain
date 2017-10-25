@@ -274,6 +274,7 @@ void InsereCrossover(unsigned char tipo)
     //faz uma copia dos genes dos vencedores
     unsigned char cromossomos[pop_original][ANTECEDENTE+CONSEQUENTE];
     float st[pop_original];
+    float spec[pop_original];
     
     for(i=0;i<pop_original;i++)
     {
@@ -282,6 +283,7 @@ void InsereCrossover(unsigned char tipo)
         cromossomos[i][j] = Pop.Cromossomo[vencedoresTorneio[i]][j];
       }
       st[i] = Pop.St[vencedoresTorneio[i]];
+      spec[i] = Pop.Spec[vencedoresTorneio[i]];
     }
     
     for(i=0;i<pop_original;i++)
@@ -291,7 +293,9 @@ void InsereCrossover(unsigned char tipo)
         Pop.Cromossomo[i][j] = cromossomos[i][j];
       }
       Pop.St[i] = st[i];
+      Pop.Spec[i] = spec[i];
     }
+    Pop.QuantidadeIndividuos = pop_original;
   }
 }
 /*
