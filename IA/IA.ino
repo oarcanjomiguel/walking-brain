@@ -183,10 +183,12 @@ struct PopulacaoAG
 unsigned char PaiMae[2]; //indice no vetor Pop dos dois individuos com maior energia pra fazer crossover
 unsigned char Ancora[CROSSOVER_MAX*2]; //indice no vetor Pop dos n individuos com menor energia que serao substituidos
 unsigned char vencedoresTorneio[POPULACAO_MAX]; //vetor com os indices dos individuos do vetor Pop que venceram o torneio
+unsigned char rankingFitness[POPULACAO_MAX];    //vetor com os indices dos individuos do vetor Pop em ordem crescente de energia
 
 ////////////////////////////////////////////////      DEBUGS      //////////////////////////////////////////////////
 unsigned char DebugAG = 0;
 unsigned char DebugSC = 0;
+unsigned char DebugME = 0;
 
 struct Populacao Pop;
 struct LeilaoGenetico Leilao;

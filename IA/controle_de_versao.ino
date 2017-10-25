@@ -30,7 +30,7 @@ Serial: 9600
 AG
 - Fazer selecao da populacao por torneio
 - Utilizar algum operador para evitar a alta quantidade de clones
-
+- Crossover por elitismo classico, elitismo biclssista, torneio, roleta
 - Insercao de novos individuos ( InsereCrossover() ) pode ser feita por torneio ou elitismo (passar parametro)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////V0.1

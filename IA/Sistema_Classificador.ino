@@ -291,6 +291,8 @@ void CobraTaxas(void)
     {
       Pop.St[Leilao.RegrasAplicaveis[i]] = Pop.St[Leilao.RegrasAplicaveis[i]] + rt;
     }
+
+    if(Pop.St[Leilao.RegrasAplicaveis[i]] < 0.0 ) Pop.St[Leilao.RegrasAplicaveis[i]] = 0.0;
     
     //Debug serial do calculo da nova St
     if(DebugSC == 1)
@@ -402,7 +404,7 @@ char LeAmbiente(void)
 void TrataSistemaClassificador(void)
 {
   unsigned int i;
-  if((EstadoSistemaClassificador !=0 )&&(DebugSC==1))
+  if((EstadoSistemaClassificador !=0 )&&(DebugME==1))
   {
     Serial.print(EstadoSistemaClassificador,DEC);
     Serial.print(" ");
@@ -529,7 +531,7 @@ void TrataSistemaClassificador(void)
 
     case ESTADOSC_SUBSTITUI:
       //insere os filhos gerados por crossover na populacao principal
-      InsereCrossover();
+      InsereCrossover(INSERE_TORNEIO);
       //incrementa o contador de geracoes
       Pop.Geracao++;
       //inicializa uma nova sequencia de iteracoes

@@ -53,6 +53,7 @@ void Estados()
           Estado = ESTADO_MENU_DEBUG;
           Serial.println("[a]: liga/desliga debug do AG");
           Serial.println("[s]: liga/desliga debug do Sistema Classificador");
+          Serial.println("[e]: liga/desliga debug das Maquinas de Estado");
           Serial.println("[z]: retorna ao menu principal");
         break;
 
@@ -195,6 +196,19 @@ void Estados()
           }
         break;
 
+        case 'e':
+          if(DebugME==0)
+          {
+            DebugME=1;
+            Serial.print("Debug das Maquinas de Estados ligado");
+          }
+          else
+          {
+            DebugME=0;
+            Serial.print("Debug das Maquinas de Estados desligado");
+          }
+        break;
+        
         case 'z':
           Serial.println("Menu principal");
           Estado = ESTADO_MENU;

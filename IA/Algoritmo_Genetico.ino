@@ -154,10 +154,7 @@ void Mutacao(float taxa)
  */
 void OrdenaFitness(void)
 {
-  //unsigned char pai[2] = {0 , 0};
   unsigned int i,j;
-  //float aux_fitness;
-  //float fitness[Pop.QuantidadeIndividuos];
   unsigned char indice[Pop.QuantidadeIndividuos];
   unsigned char aux_indice;
   
@@ -217,43 +214,93 @@ void OrdenaFitness(void)
 }
 /*
  * Funcao:  void InsereCrossover(void)
- * In:      void
+ * In:      unsigned char tipo: tipo de isercao dos novos individuos na populacao:
+ *            0 = elitismo
+ *            1 = torneio
  * Out:     void
- * Desc.:   Insere os individuos gerados por crossover(PopAG) na populacao:
+ * Desc.:   Insere os individuos gerados por crossover(PopAG) na populacao por torneio simples ou elitismo
+ *          Elitismo:
  *            -Substitui no lugar dos individuos indicados por Ancora[]
  *            -Calucula a energia St como sendo a media das energias dos pais
  *            -Calcula a especificidade da nova regra
  */
-void InsereCrossover(void)
+void InsereCrossover(unsigned char tipo)
 {
   unsigned int i,j;
   unsigned char numdcare=0;
-  for(i=0;i<PopAG.QuantidadeIndividuos;i++)
+  if(tipo == INSERE_ELITISMO)
   {
-    numdcare=0;
-    for(j=0;j<ANTECEDENTE+CONSEQUENTE;j++)
+    for(i=0;i<PopAG.QuantidadeIndividuos;i++)
     {
-      //copia o cromossomo para a populacao no lugar dos piores individuos
-      Pop.Cromossomo[Ancora[i]][j] = PopAG.Cromossomo[i][j];
-      //conta o numero de don't care symbols para calculo do Spec
-      if(PopAG.Cromossomo[Ancora[i]][j] == DONT_CARE_SYMBOL) numdcare++;
+      numdcare=0;
+      for(j=0;j<ANTECEDENTE+CONSEQUENTE;j++)
+      {
+        //copia o cromossomo para a populacao no lugar dos piores individuos
+        Pop.Cromossomo[Ancora[i]][j] = PopAG.Cromossomo[i][j];
+        //conta o numero de don't care symbols para calculo do Spec
+        if(PopAG.Cromossomo[Ancora[i]][j] == DONT_CARE_SYMBOL) numdcare++;
+      }
+      //verifica se a regra eh generica demais
+      if(numdcare >= ANTECEDENTE)
+      { 
+        //aleatoriza um gene aleatorio do antecedente entre os estados excluindo o don't care
+        Pop.Cromossomo[Ancora[i]][random(ANTECEDENTE)] = random(ESTADOS_GENE);
+        numdcare--;
+      }
+      Pop.Spec[Ancora[i]] = (ANTECEDENTE - numdcare)*1.0/ANTECEDENTE;
+      Pop.St[Ancora[i]] = ( Pop.St[PaiMae[0]] + Pop.St[PaiMae[1]] )/2;
     }
-    //verifica se a regra eh generica demais
-    if(numdcare >= ANTECEDENTE)
-    { 
-      //aleatoriza um gene aleatorio do antecedente entre os estados excluindo o don't care
-      Pop.Cromossomo[Ancora[i]][random(ANTECEDENTE)] = random(ESTADOS_GENE);
-      numdcare--;
+  }
+  else
+  if(tipo == INSERE_TORNEIO)
+  {
+    //insere os individous novos na populacao (aumentando o numero da Pop.QuantidadeIndividuos)
+    for(i=0;i<PopAG.QuantidadeIndividuos;i++)
+    {
+      for(j=0;j<ANTECEDENTE+CONSEQUENTE;j++)
+      {
+        Pop.Cromossomo[Pop.QuantidadeIndividuos+i][j] = PopAG.Cromossomo[i][j];
+      }
+      Pop.QuantidadeIndividuos++;
     }
-    Pop.Spec[Ancora[i]] = (ANTECEDENTE - numdcare)*1.0/ANTECEDENTE;
-    Pop.St[Ancora[i]] = ( Pop.St[PaiMae[0]] + Pop.St[PaiMae[1]] )/2;
+    // salva em vencedoresTorneio os indices dos escolhidos
+    // tem que usar Pop.QuantidadeIndividuos - PopAG.QuantidadeIndividuos para retornar ao tamanho
+    // populacional original (independente do valor)
+    unsigned int pop_original;
+    pop_original = Pop.QuantidadeIndividuos - PopAG.QuantidadeIndividuos;
+    ExecutaTorneio(pop_original);
+    Serial.print("Quantidade de individos selecionados: ");
+    Serial.println(pop_original);
+    //faz uma copia dos genes dos vencedores
+    unsigned char cromossomos[pop_original][ANTECEDENTE+CONSEQUENTE];
+    float st[pop_original];
+    
+    for(i=0;i<pop_original;i++)
+    {
+      for(j=0;j<ANTECEDENTE+CONSEQUENTE;j++)
+      {
+        cromossomos[i][j] = Pop.Cromossomo[vencedoresTorneio[i]][j];
+      }
+      st[i] = Pop.St[vencedoresTorneio[i]];
+    }
+    
+    for(i=0;i<pop_original;i++)
+    {
+      for(j=0;j<ANTECEDENTE+CONSEQUENTE;j++)
+      {
+        Pop.Cromossomo[i][j] = cromossomos[i][j];
+      }
+      Pop.St[i] = st[i];
+    }
   }
 }
 /*
  * Funcao:  void ExecutaTorneio(unsigned int quant)
  * In:      unsigned int quant: quantidade de individuos que serao selecionados por torneio (campeoes)
  * Out:     void
- * Desc.:   Executa a selecao de "quant" individuos por torneio simples comparando a energia
+ * Desc.:   Executa a selecao de "quant" individuos por torneio simples a partir dos individuos de Pop 
+ *          comparando a energia.
+ *          
  */
 void ExecutaTorneio(unsigned int quant)
 {
@@ -271,7 +318,7 @@ void ExecutaTorneio(unsigned int quant)
     while (k<QUANTIDADE_COMPETIDORES_TORNEIO)
     {
       candidato = random(Pop.QuantidadeIndividuos);
-      //se ja tem escolhidos anteriores, verifica se o competidor ja esta na lista dos vencedores
+      //verifica se o competidor ja esta na lista dos vencedores, se ja tem vencedores anteriores
       achou=0;
       if(i>0)
       {
@@ -298,12 +345,13 @@ void ExecutaTorneio(unsigned int quant)
       
     }
     //faz a disputa de energias
-    escolhidos[i] = competidor[0];
+    vencedoresTorneio[i] = competidor[0];
     for(j=0;j<QUANTIDADE_COMPETIDORES_TORNEIO;j++)
     {
-      if(Pop.St[competidor[j]] > Pop.St[escolhidos[i]]) escolhidos[i] = competidor[j];
+      if(Pop.St[competidor[j]] > Pop.St[vencedoresTorneio[i]]) vencedoresTorneio[i] = competidor[j];
     }
-    
+    Serial.println(vencedoresTorneio[i],DEC);
   }
+  
 }
 
