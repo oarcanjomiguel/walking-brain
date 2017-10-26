@@ -60,7 +60,7 @@ const int SERVO_ANGULO2 = 110;
 //#define SPOW 3
 #define RAND_MAX 1000
 //#define ITERACOES_MEIA_VIDA 100
-#define ITERACOES_MEIA_VIDA 200
+#define ITERACOES_MEIA_VIDA 10
 //Quantidade de estados possiveis para cada gene (sem considerar o don't care)
 #define ESTADOS_GENE 2
 #define DONT_CARE_SYMBOL ESTADOS_GENE
@@ -88,7 +88,7 @@ const int SERVO_ANGULO2 = 110;
 #define ESTADOSC_SUBSTITUI 10
 
 ///////////////////////////////////////////////////////ALGORITMO GENETICO///////////////////////////////////////////////////////
-#define TAXA_MUTACAO 0.3
+#define TAXA_MUTACAO 0.3 //padrao: 0.3
 #define POPULACAO_AG_MAX 10
 #define CROSSOVER_MAX 2 //quantidade de duplas de filhos que serao criados em cada sessao de crossover (padrao:1, ou seja, dois filhos)
 #define GERACAO_MAX 10 //padrao:3
@@ -186,13 +186,21 @@ unsigned char vencedoresTorneio[POPULACAO_MAX]; //vetor com os indices dos indiv
 unsigned char rankingFitness[POPULACAO_MAX];    //vetor com os indices dos individuos do vetor Pop em ordem crescente de energia
 
 ////////////////////////////////////////////////      DEBUGS      //////////////////////////////////////////////////
-unsigned char DebugAG = 0;
-unsigned char DebugSC = 0;
-unsigned char DebugME = 0;
+
+struct FlagDebug
+{
+  //flags de debug e nivel de cada debug
+  unsigned char AG = 0;
+  unsigned char SC = 0;
+  unsigned char ME = 0;
+  unsigned char Torneio = 0;
+};
+
 
 struct Populacao Pop;
 struct LeilaoGenetico Leilao;
 struct PopulacaoAG PopAG;
+struct FlagDebug Debug;
 
 /* /////////////////////////////////////////////////////////////////////////////////
  * ///////////////////////////// SETUP /////////////////////////////////////////////

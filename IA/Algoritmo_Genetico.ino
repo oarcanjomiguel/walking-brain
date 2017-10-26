@@ -14,11 +14,8 @@
 void Crossover(unsigned char ind[2])
 {
   unsigned char tamanho_cromossomo;
-  //unsigned char quantidade_individuos = 2;
   unsigned int ponto_crossover;
-  //unsigned char casal_temporario[2][ANTECEDENTE+CONSEQUENTE];
   unsigned char i,j;
-  //tamanho_cromossomo  = sizeof(individuos_crossover[0]);
   
   tamanho_cromossomo  = ANTECEDENTE+CONSEQUENTE;
   ponto_crossover = random(tamanho_cromossomo-1);
@@ -35,7 +32,7 @@ void Crossover(unsigned char ind[2])
       }
     }
     //imprime os individuos (debug)
-    if(DebugAG == 1)
+    if(Debug.AG == 1)
     {
       for(i=0;i<2;i++)
       {
@@ -56,7 +53,7 @@ void Crossover(unsigned char ind[2])
         PopAG.Cromossomo[PopAG.QuantidadeIndividuos+1][j] = Pop.Cromossomo[ind[0]][j];
       }
     }
-    if(DebugAG == 1)
+    if(Debug.AG == 1)
     {
       Serial.print("individuos cruzados: ");
       Serial.print(ind[0],DEC);
@@ -76,7 +73,7 @@ void Crossover(unsigned char ind[2])
       }
       Serial.print("Populacao total de filhotes: ");
       Serial.println(PopAG.QuantidadeIndividuos,DEC);
-    } //if(DebugAG == 1)
+    } //if(Debug.AG == 1)
     PopAG.QuantidadeIndividuos++;
     PopAG.QuantidadeIndividuos++;
   } //if(PopAG.QuantidadeIndividuos < POPULACAO_AG_MAX)
@@ -100,7 +97,7 @@ void Mutacao(float taxa)
   
   quantidade_genes = PopAG.QuantidadeIndividuos*(ANTECEDENTE+CONSEQUENTE);
   quantidade_genes_mutados = taxa * quantidade_genes;
-  if(DebugAG == 1)
+  if(Debug.AG == 1)
   {
     Serial.print("Quantidade de genes mutados: ");
     Serial.println(quantidade_genes_mutados,DEC);
@@ -110,14 +107,14 @@ void Mutacao(float taxa)
   unsigned char individuos_mutados[quantidade_genes_mutados]; //indice do individuo dentro do vetor PopAG que tera um gene mutado
   unsigned char gene_novo[quantidade_genes_mutados];          //novo valor do gene mutado
   unsigned char gene_original[quantidade_genes_mutados];
-  if(DebugAG==1) Serial.print("Genes mutados: ");
+  if(Debug.AG==1) Serial.print("Genes mutados: ");
   for(i=0;i<quantidade_genes_mutados;i++)
   {
     //sorteia os individuos que terao seus genes mutados
     individuos_mutados[i] = random(PopAG.QuantidadeIndividuos);
     //sorteia o gene dentro do individuo i que sera mutado
     genes_mutados[i] = random(ANTECEDENTE+CONSEQUENTE);
-    if(DebugAG==1)
+    if(Debug.AG==1)
     {
       Serial.print(genes_mutados[i],DEC);
       Serial.print(" ");
@@ -142,7 +139,7 @@ void Mutacao(float taxa)
     //muda o gene na populacao PopAG
     PopAG.Cromossomo[individuos_mutados[i]][genes_mutados[i]] = gene_novo[i];
   }
-  if(DebugAG==1) Serial.println("");
+  if(Debug.AG==1) Serial.println("");
 }
 /*
  * Funcao:  void OrdenaFitness(void)
@@ -178,7 +175,7 @@ void OrdenaFitness(void)
     }
   }
   
-  if (DebugAG == 1)
+  if (Debug.AG == 1)
   {
     Serial.print("Ordem de fitness: ");
     for(i=0;i<Pop.QuantidadeIndividuos;i++)
@@ -189,17 +186,17 @@ void OrdenaFitness(void)
     Serial.println("");
   }
   //salva os melhores no vetor PaiMae[]
-  if(DebugAG == 1) Serial.print("Indices salvos para crossover: ");
+  if(Debug.AG == 1) Serial.print("Indices salvos para crossover: ");
   for(i=0;i<2;i++)
   {
     PaiMae[i] = indice[i];
-    if (DebugAG == 1)
+    if (Debug.AG == 1)
     {
       Serial.print(PaiMae[i],DEC);
       Serial.print(" ");
     }
   }
-  if(DebugAG == 1)
+  if(Debug.AG == 1)
   {
     Serial.println("");
     Serial.print("Individuos com os piores fitness: ");
@@ -208,9 +205,9 @@ void OrdenaFitness(void)
   for(i=0;i<CROSSOVER_MAX*2;i++)
   {
     Ancora[i] = indice[Pop.QuantidadeIndividuos-1-i];
-    if(DebugAG == 1) Serial.print(Ancora[i],DEC);
+    if(Debug.AG == 1) Serial.print(Ancora[i],DEC);
   }
-  if(DebugAG == 1) Serial.println("");
+  if(Debug.AG == 1) Serial.println("");
 }
 /*
  * Funcao:  void InsereCrossover(void)
@@ -257,25 +254,38 @@ void InsereCrossover(unsigned char tipo)
     //insere os individous novos na populacao (aumentando o numero da Pop.QuantidadeIndividuos)
     for(i=0;i<PopAG.QuantidadeIndividuos;i++)
     {
+      numdcare=0;
       for(j=0;j<ANTECEDENTE+CONSEQUENTE;j++)
       {
         Pop.Cromossomo[Pop.QuantidadeIndividuos+i][j] = PopAG.Cromossomo[i][j];
+        if(PopAG.Cromossomo[i][j] == DONT_CARE_SYMBOL) numdcare++;
       }
-      Pop.QuantidadeIndividuos++;
+      //verifica se a regra eh generica demais
+      if(numdcare >= ANTECEDENTE)
+      { 
+        //aleatoriza um gene aleatorio do antecedente entre os estados excluindo o don't care
+        Pop.Cromossomo[Pop.QuantidadeIndividuos+i][random(ANTECEDENTE)] = random(ESTADOS_GENE);
+        numdcare--;
+      }
+      Pop.Spec[Pop.QuantidadeIndividuos+i] = (ANTECEDENTE - numdcare)*1.0/ANTECEDENTE;
+      Pop.St[Pop.QuantidadeIndividuos+i] = ( Pop.St[PaiMae[0]] + Pop.St[PaiMae[1]] )/2;
+      //Pop.QuantidadeIndividuos++;
     }
+    
     // salva em vencedoresTorneio os indices dos escolhidos
-    // tem que usar Pop.QuantidadeIndividuos - PopAG.QuantidadeIndividuos para retornar ao tamanho
-    // populacional original (independente do valor)
     unsigned int pop_original;
-    pop_original = Pop.QuantidadeIndividuos - PopAG.QuantidadeIndividuos;
+    pop_original = Pop.QuantidadeIndividuos;
+    Pop.QuantidadeIndividuos += PopAG.QuantidadeIndividuos;
     ExecutaTorneio(pop_original);
-    Serial.print("Quantidade de individos selecionados: ");
-    Serial.println(pop_original);
-    //faz uma copia dos genes dos vencedores
+    if(Debug.Torneio==1)
+    {
+      Serial.print("Quantidade de individos selecionados: ");
+      Serial.println(pop_original);
+    }
     unsigned char cromossomos[pop_original][ANTECEDENTE+CONSEQUENTE];
     float st[pop_original];
     float spec[pop_original];
-    
+    //faz uma copia dos genes dos vencedores
     for(i=0;i<pop_original;i++)
     {
       for(j=0;j<ANTECEDENTE+CONSEQUENTE;j++)
@@ -308,7 +318,7 @@ void InsereCrossover(unsigned char tipo)
  */
 void ExecutaTorneio(unsigned int quant)
 {
-  unsigned char escolhidos[quant];
+  //unsigned char escolhidos[quant];
   unsigned int i,j,k;
   unsigned int tentativas_campeoes;
   unsigned int tentativas_chave;
@@ -317,6 +327,12 @@ void ExecutaTorneio(unsigned int quant)
   
   for(i=0;i<quant;i++)
   {
+    if(Debug.Torneio==1)
+    {
+      Serial.print("Chave: ");
+      Serial.println(i,DEC);
+      Serial.print("Competidores: ");
+    }
     //preenche a chave dos competidores
     k=0;
     while (k<QUANTIDADE_COMPETIDORES_TORNEIO)
@@ -329,7 +345,7 @@ void ExecutaTorneio(unsigned int quant)
         //usa a propria lista de escolhidos como lista tabu
         for(j=0;j<i;j++)
         {
-          if(candidato == escolhidos[j]) achou = 1;
+          if(candidato == vencedoresTorneio[j]) achou = 1;
         }
       }
       //verifica se esse competidor ja esta nessa chave
@@ -344,6 +360,11 @@ void ExecutaTorneio(unsigned int quant)
       if(achou == 0)
       {
         competidor[k] = candidato;
+        if(Debug.Torneio==1)
+        {
+          Serial.print(competidor[k],DEC);
+          Serial.print(" ");
+        }
         k++;
       }
       
@@ -354,7 +375,12 @@ void ExecutaTorneio(unsigned int quant)
     {
       if(Pop.St[competidor[j]] > Pop.St[vencedoresTorneio[i]]) vencedoresTorneio[i] = competidor[j];
     }
-    Serial.println(vencedoresTorneio[i],DEC);
+    if(Debug.Torneio==1)
+    {
+      Serial.print("Vencedor: ");
+      Serial.println(vencedoresTorneio[i],DEC);
+    }
+    //Serial.println("");
   }
   
 }

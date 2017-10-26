@@ -77,6 +77,23 @@ void ImprimePopulacao(unsigned int tam)
   Serial.print(":");
   Serial.println(segundo,DEC);
 }
+
+void ImprimePopulacaoAG(void)
+{
+  unsigned int i,j;
+  for(i=0;i<PopAG.QuantidadeIndividuos;i++)
+  {
+    Serial.print(i,DEC);
+    Serial.print(")");
+    for(j=0;j<ANTECEDENTE+CONSEQUENTE; j++)
+    {
+      if(j==ANTECEDENTE) Serial.print(":");
+      if (PopAG.Cromossomo[i][j] == DONT_CARE_SYMBOL) { Serial.print("#"); }
+      else { Serial.print(PopAG.Cromossomo[i][j],DEC); }
+    }
+    Serial.println("");
+  }
+}
 /*
  * Funcao:  BuscaRegras(unsigned char ambiente[ANTECEDENTE])
  * In:      ambiente[ANTECEDENTE]: deve receber um vetor de chars do tamanho do antecedente das regras
@@ -295,7 +312,7 @@ void CobraTaxas(void)
     if(Pop.St[Leilao.RegrasAplicaveis[i]] < 0.0 ) Pop.St[Leilao.RegrasAplicaveis[i]] = 0.0;
     
     //Debug serial do calculo da nova St
-    if(DebugSC == 1)
+    if(Debug.SC == 1)
     {
       Serial.print("Taxa de vida: ");
       Serial.println(Taxa_v,DEC);
@@ -323,16 +340,16 @@ void CobraTaxas(void)
 void ExecutaLeilao(void)
 {
   unsigned int i;
-  if(DebugAG==1) { Serial.print("Regras encontradas: "); }
+  if(Debug.AG==1) { Serial.print("Regras encontradas: "); }
   Leilao.QuantidadeParticipantes = BuscaRegras(MensagemAmbiente);
-  if(DebugAG==1)
+  if(Debug.AG==1)
   {
     Serial.print(Leilao.QuantidadeParticipantes,DEC);
     Serial.print(" (");
   }
   for(i=0;i<Leilao.QuantidadeParticipantes;i++)
   {
-    if(DebugAG==1)
+    if(Debug.AG==1)
     {
       Serial.print(Leilao.RegrasAplicaveis[i],DEC);
       Serial.print(":");
@@ -341,15 +358,15 @@ void ExecutaLeilao(void)
     //Serial.print(Leilao.Bidt[i],DEC);
     //Serial.print(";");
     Leilao.eBidt[i] = CalculaeBidt(Leilao.Bidt[i]);
-    if(DebugAG==1) 
+    if(Debug.AG==1) 
     {
       Serial.print(Leilao.eBidt[i],DEC);
       if(i!=Leilao.QuantidadeParticipantes-1) { Serial.print(" "); }
     }
   }
-  if(DebugAG==1) { Serial.println(")"); }
+  if(Debug.AG==1) { Serial.println(")"); }
   Leilao.Vencedor = Leilao.RegrasAplicaveis[BuscaVencedor(Leilao.QuantidadeParticipantes)];
-  if(DebugAG==1) 
+  if(Debug.AG==1) 
   {
     Serial.print("Vencedor: ");
     Serial.println(Leilao.Vencedor,DEC);
@@ -377,7 +394,7 @@ char LeAmbiente(void)
       {
         //achou = j;
         MensagemAmbiente[i] = j-1; //salva o equivalente da Tabela Verdade da posicao do servo
-        if(DebugSC==1)
+        if(Debug.SC==1)
         {
           Serial.print("Angulo encontrado: ");
           Serial.println(AnguloServo[j],DEC);
@@ -404,7 +421,7 @@ char LeAmbiente(void)
 void TrataSistemaClassificador(void)
 {
   unsigned int i;
-  if((EstadoSistemaClassificador !=0 )&&(DebugME==1))
+  if((EstadoSistemaClassificador !=0 )&&(Debug.ME==1))
   {
     Serial.print(EstadoSistemaClassificador,DEC);
     Serial.print(" ");
@@ -490,13 +507,13 @@ void TrataSistemaClassificador(void)
         if(Pop.Iteracao >= ITERACOES_MEIA_VIDA) //se chegou na 100a iteracao, roda o Algoritmo Genetico
         {
           EstadoSistemaClassificador = ESTADOSC_CROSSOVER;
-          ImprimePopulacao(Pop.QuantidadeIndividuos);
+          
           OrdenaFitness();
         }
         else
         {
           Pop.Iteracao++;
-          if(DebugSC == 1)
+          if(Debug.SC == 1)
           {
             Serial.print("Iteracao ");
             Serial.print(Pop.Iteracao,DEC);
@@ -526,6 +543,7 @@ void TrataSistemaClassificador(void)
 
     case ESTADOSC_MUTACAO:
       Mutacao(TAXA_MUTACAO);
+      ImprimePopulacaoAG();
       EstadoSistemaClassificador = ESTADOSC_SUBSTITUI;
     break;
 
@@ -539,6 +557,7 @@ void TrataSistemaClassificador(void)
       //condicao de parada
       if(Pop.Geracao >= GERACAO_MAX) { EstadoSistemaClassificador = ESTADOSC_AGUARDA; }
       else { EstadoSistemaClassificador = ESTADOSC_INICIALIZA; }
+      ImprimePopulacao(Pop.QuantidadeIndividuos+PopAG.QuantidadeIndividuos);
       //else { EstadoSistemaClassificador = ESTADOSC_ESTABILIZA; }
     break;
   }

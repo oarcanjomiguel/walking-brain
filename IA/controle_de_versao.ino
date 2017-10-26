@@ -21,17 +21,15 @@ Serial: 9600
 //SENSOR
 
 //DEBUG
-- fazer debug multinivel
+- fazer uma struct de debug que contenha os flags de debugs (como chars) e o nivel de cada debug
+  - fazer debug multinivel
 - Fazer funcao de traducao de erro de int para string (para traduzir o retorno das funcoes)
 - Fazer funcoes de metricas do AG
-- Ailmentacao e ativacao de cada servo independente
-    - usar pinos de I/O para ligar cada servo de modo independente (VCC)
+- Alimentacao e ativacao de cada servo independente
+    - usar pinos de I/O para ligar cada servo de modo independente (VCC). Possivelmente usar rele ou transistor
     
 AG
-- Fazer selecao da populacao por torneio
-- Utilizar algum operador para evitar a alta quantidade de clones
 - Crossover por elitismo classico, elitismo biclssista, torneio, roleta
-- Insercao de novos individuos ( InsereCrossover() ) pode ser feita por torneio ou elitismo (passar parametro)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////V0.1
 GERAL
@@ -77,7 +75,14 @@ AG
     - calcular St e Spec para cada individuo novo ao inseri-lo na populacao
 - Verificar a especificidade para evitar regras com Spec 0
 - Corrigido bug dos clones na funcao Mutacao. Nao estava inserindo a mutacao na populacao gerada (PopAG)
-
+- Corrigido bug da repeticao de vencedores e competidores: vetor de comparacao na funcao Executatorneio() era local(escolhidos[])
+  quando os vencedores sao salvos no vetor global(vencedoresTorneio[])
+- Fazer selecao da populacao por torneio
+- Insercao de novos individuos ( InsereCrossover() ) pode ser feita por torneio ou elitismo (passar parametro)
+- Corrigido bug do gene zerado: a funcao InsereCrossover() quando com o parametro INSERE_ELITISMO estava copiando
+  o primeiro elementos de PopAG em cima do ultimo elemento de Pop, por isso ficava um espaco vazio no final.
+  Alem disso essa rotina de insercao estava incrementando Pop.QuantidadeIndividuos e o contador i do "for", fazendo a copia
+  pular duas posicoes em Pop.
 DEBUG
 - Fazer menu de config de parametros com opcao de verbose debug para cada modulo
   - geracao de individuos, calculo dos lances, troca de geracoes, evolucao etc

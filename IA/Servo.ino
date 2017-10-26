@@ -82,7 +82,7 @@ void PosicionaServos(unsigned char servonum, unsigned char posic)
     {
       //posic + 1 porque a posicao 0 eh 90 graus (posicao de descanso)
       posicaoServosAlvo[servonum] = AnguloServo[posic+1];
-      if(DebugAG == 1)
+      if(Debug.AG == 1)
       {
         Serial.print("Servo: ");
         Serial.print(servonum,DEC);

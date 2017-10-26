@@ -54,6 +54,7 @@ void Estados()
           Serial.println("[a]: liga/desliga debug do AG");
           Serial.println("[s]: liga/desliga debug do Sistema Classificador");
           Serial.println("[e]: liga/desliga debug das Maquinas de Estado");
+          Serial.println("[t]: liga/desliga debug do Torneio");
           Serial.println("[z]: retorna ao menu principal");
         break;
 
@@ -170,42 +171,55 @@ void Estados()
       {
         //liga/desliga debug do AG
         case 'a':
-          if(DebugAG == 0)
+          if(Debug.AG == 0)
           {
             Serial.println("Debug do Algoritmo Genetico ligado");
-            DebugAG = 1;
+            Debug.AG = 1;
           }
           else
           {
             Serial.println("Debug do Algoritmo Genetico desligado");
-            DebugAG = 0;
+            Debug.AG = 0;
           }
         break;
         
         //liga/desliga debug do Sistema Classificador
         case 's':
-          if(DebugSC == 0)
+          if(Debug.SC == 0)
           {
-            DebugSC = 1;
+            Debug.SC = 1;
             Serial.println("Debug do sistema Classificado ligado");
           }
           else
           {
-            DebugSC = 0;
+            Debug.SC = 0;
             Serial.println("Debug do Sistema Classificador desligado");
           }
         break;
 
         case 'e':
-          if(DebugME==0)
+          if(Debug.ME==0)
           {
-            DebugME=1;
+            Debug.ME=1;
             Serial.print("Debug das Maquinas de Estados ligado");
           }
           else
           {
-            DebugME=0;
+            Debug.ME=0;
             Serial.print("Debug das Maquinas de Estados desligado");
+          }
+        break;
+
+        case 't':
+          if(Debug.Torneio==0)
+          {
+            Debug.Torneio=1;
+            Serial.print("Debug Torneio ligado");
+          }
+          else
+          {
+            Debug.Torneio=0;
+            Serial.print("Debug Torneio desligado");
           }
         break;
         
@@ -256,7 +270,7 @@ void Estados()
           if(RegraAplicada <= POPULACAO_MAX) //individuo eh valido
           {
             if(Estado_Servo!=3) Estado_Servo = 3;
-            if(DebugAG==1)
+            if(Debug.AG==1)
             {
               Serial.print("Regra Aplicada: ");
               Serial.println(RegraAplicada,DEC);
@@ -264,7 +278,7 @@ void Estados()
             for(i=ANTECEDENTE;i<ANTECEDENTE+CONSEQUENTE;i++)
             {
               PosicionaServos(i-ANTECEDENTE,Pop.Cromossomo[RegraAplicada][i]);
-              if(DebugAG==1) Serial.print(Pop.Cromossomo[RegraAplicada][i],DEC);
+              if(Debug.AG==1) Serial.print(Pop.Cromossomo[RegraAplicada][i],DEC);
             }
           }
           Estado = ESTADO_MENU_IA;
