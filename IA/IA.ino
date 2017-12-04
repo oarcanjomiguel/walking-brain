@@ -16,7 +16,7 @@
 #define PINO_SERVO2 3
 #define PINO_SERVO3 4
 #define PINO_SERVO4 5
-#define CENTSEG_SERVO_WRITE 1
+#define CENTSEG_SERVO_WRITE 2
 #define ANGULOS_SERVO 2
 const int SERVO_ANGULO0 = 90;
 const int SERVO_ANGULO1 = 70;
